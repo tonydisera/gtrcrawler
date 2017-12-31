@@ -12,3 +12,9 @@ body {
   margin-right: 20px;
 }
 
+#loading-search {
+  width: 40px;
+  height: 40px;
+  vertical-align: middle;
+  padding-left: 10px;
+}

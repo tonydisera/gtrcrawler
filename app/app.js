@@ -12,6 +12,9 @@ function init() {
       { title: "Name", data: "Title" },
       { title: "OMIM", data:  "_omim" },
       { title: "Mode of Inheritance", data: "_modeOfInheritance" },
+      { title: "Gene Panel Count", data:  "_genePanelCount"  },
+      { title: "Gene Count", data:  "_geneCount"  },
+      { title: "Genes", data:  "_geneNames", render: $.fn.dataTable.render.ellipsis( 50 )},
     ]
   });
   diseaseTable.on( 'click', 'tr', function () {
@@ -26,10 +29,10 @@ function init() {
       { title: "ID", data: "id"},
       { title: "Name", data: "testname" },
       { title: "Gene Count", data:  "genecount",  },
-      { title: "Genes", data:  "_geneNamesAbbrev"},
+      { title: "Genes", data:  "_geneNames", render: $.fn.dataTable.render.ellipsis( 50 )},
       { title: "Disease Count", data:  "_diseaseCount",  },
-      { title: "Diseases", data:  "_diseaseNames"}
-      //{ title: "Target Population", data: "targetpopulation" },
+      { title: "Diseases", data:  "_diseaseNames"},
+      { title: "Target Population", data: "targetpopulation", render: $.fn.dataTable.render.ellipsis( 70 ) }
     ]
   });
   genePanelTable.on( 'click', 'tr', function () {
@@ -53,28 +56,45 @@ function init() {
 }
 
 function performSearch() {
+  $('#loading-search').removeClass("hide");
   var searchTerm = $('#input-search-term').val();
 
   clearTables();
 
-  promiseGetDiseases(searchTerm)
+  model.promiseGetDiseases(searchTerm)
   .then(function(data) {
 
-    showDiseases(data.diseases);
+    var diseases = data.diseases;
+
+    var promises = [];
     data.diseases.forEach(function(disease) {
 
-      promiseGetGenePanels(disease)
+      var p = model.promiseGetGenePanels(disease)
       .then(function(data) {
 
-        data.disease.genePanels = data.genePanels;
+        var filteredGenePanels = model.processGenePanelData(data.genePanels);
+        data.disease.genePanels = filteredGenePanels;
 
       },
       function(error) {
 
       })
 
+      promises.push(p);
+
     })
 
+    Promise.all(promises)
+    .then(function()
+    {
+      var filteredDiseases = model.processDiseaseData(diseases);
+      $('#loading-search').addClass("hide");
+
+      showDiseases(filteredDiseases);
+    },
+    function(error) {
+
+    });
 
 
   },
@@ -108,36 +128,7 @@ function showGenePanels(diseases) {
 
 
   // Merge gene panels that are common across selected diseases
-  var genePanelMap = {};
-  diseases.forEach(function(disease) {
-    disease.genePanels.forEach(function(genePanel) {
-      theGenePanel = genePanelMap[genePanel.id];
-      if (theGenePanel == null) {
-        genePanel._diseases = {};
-        theGenePanel = genePanel;
-        genePanelMap[genePanel.id] = theGenePanel;
-      }
-
-      theGenePanel._diseases[disease._uid] = disease;
-    })
-  })
-
-  var mergedGenePanels = [];
-  for (var key in genePanelMap) {
-    var genePanel = genePanelMap[key];
-
-    genePanel._diseaseNames = "";
-    for (var uid in genePanel._diseases) {
-      var theDisease = genePanel._diseases[uid];
-      if (genePanel._diseaseNames.length > 0) {
-        genePanel._diseaseNames += ", ";
-      }
-      genePanel._diseaseNames += theDisease.Title;
-    }
-    genePanel._diseaseCount = Object.keys(genePanel._diseases).length;
-
-    mergedGenePanels.push(genePanel);
-  }
+  mergedGenePanels = model.mergeGenePanelsAcrossDiseases(diseases);
 
   genePanelTable.rows.add(mergedGenePanels);
   genePanelTable.draw();
@@ -148,232 +139,48 @@ function showGenes(genePanels) {
   $('#genes-box').removeClass("hide");
   geneTable.clear();
 
-
-  // Merge genes common across selected gene panels
-  var geneMap = {};
-  genePanels.forEach(function(genePanel) {
-    genePanel._genes.forEach(function(gene) {
-      theGene = geneMap[gene.geneid];
-      if (theGene == null) {
-        gene._genePanels = {};
-        gene._diseases = {};
-        theGene = gene;
-        geneMap[gene.geneid] = theGene;
-      }
-
-      theGene._genePanels[genePanel.id] = genePanel;
-      for (var uid in genePanel._diseases) {
-        theGene._diseases[uid] = genePanel._diseases[uid];
-      }
-
-    })
-  })
-
-  var mergedGenes = [];
-  for (var key in geneMap) {
-    var gene = geneMap[key];
-
-
-    gene._genePanelNames = "";
-    for (var id in gene._genePanels) {
-      var theGenePanel = gene._genePanels[id];
-      if (gene._genePanelNames.length > 0) {
-        gene._genePanelNames += ", ";
-      }
-      gene._genePanelNames += theGenePanel.testname;
-    }
-    gene._genePanelCount = Object.keys(gene._genePanels).length;
-
-
-    gene._diseaseNames = "";
-    for (var uid in gene._diseases) {
-      var theDisease = gene._diseases[uid];
-      if (gene._diseaseNames.length > 0) {
-        gene._diseaseNames += ", ";
-      }
-      gene._diseaseNames += theDisease.Title;
-    }
-    gene._diseaseCount = Object.keys(gene._diseases).length;
-
-    mergedGenes.push(gene);
-  }
-
+  var mergedGenes = model.mergeGenesAcrossPanels(genePanels);
   geneTable.rows.add(mergedGenes);
   geneTable.draw();
 }
 
-function promiseGetDiseases(searchTerm) {
+jQuery.fn.dataTable.render.ellipsis = function ( cutoff, wordbreak, escapeHtml ) {
+  var esc = function ( t ) {
+    return t
+      .replace( /&/g, '&amp;' )
+      .replace( /</g, '&lt;' )
+      .replace( />/g, '&gt;' )
+      .replace( /"/g, '&quot;' );
+  };
 
-  return new Promise(function(resolve, reject) {
-
-
-
-    var searchUrl = MEDGEN_SEARCH_URL
-                    + '&usehistory=y&retmode=json'
-                    + '&term='
-                    + '(((' + searchTerm +'[title]) AND "in gtr"[Filter])) AND (("conditions"[Filter] OR "diseases"[Filter]))';
-
-
-    $.ajax( searchUrl )
-    .done(function(data) {
-
-      if (data["esearchresult"]["ERROR"] != undefined) {
-        msg = "disease search error: " + data["esearchresult"]["ERROR"];
-        console.log(msg);
-        reject(msg);
-      } else {
-        var webenv = data["esearchresult"]["webenv"];
-        var queryKey = data["esearchresult"]["querykey"];
-
-        var summaryUrl = MEDGEN_SUMMARY_URL + "&query_key=" + queryKey + "&WebEnv=" + webenv + "&usehistory=y"
-        $.ajax( summaryUrl )
-        .done(function(data) {
-
-          if (data.childNodes.length < 2) {
-            if (data.esummaryresult && data.esummaryresult.length > 0) {
-              sumData.esummaryresult.forEach( function(message) {
-              });
-            }
-            resolve({'searchTerm': searchTerm, 'diseases': []})
-          } else {
-            var results = xmlToJSON(data.childNodes[1].innerHTML)
-            if (results.ERROR) {
-              if (results.ERROR == 'Empty result - nothing todo') {
-                resolve({'searchTerm': searchTerm, 'diseases': []});
-              } else {
-                reject("Unable to parse disease summary results." + results.ERROR);
-              }
-            } else {
-              var diseases = results.DocumentSummarySet.DocumentSummary;
-              computeDiseaseFields(diseases);
-              resolve({'searchTerm': searchTerm, 'diseases': diseases});
-            }
-          }
-        })
-        .fail(function() {
-          var msg = "Error in medgen disease summary. ";
-          console.log(msg);
-          reject(msg);
-        })
-      }
-
-    })
-    .fail(function(data) {
-        var msg = "Error in medgen disease search. ";
-        console.log(msg)
-        reject(msg);
-    })
-
-  })
-
-}
-
-function computeDiseaseFields(diseases) {
-  diseases.forEach(function(disease) {
-    disease._omim = (disease.ConceptMeta && disease.ConceptMeta.OMIM && disease.ConceptMeta.OMIM.MIM) ? disease.ConceptMeta.OMIM.MIM : "";
-
-    disease._modeOfInheritance = "";
-    if (disease.ConceptMeta && disease.ConceptMeta.ModesOfInheritance) {
-      for (key in disease.ConceptMeta.ModesOfInheritance) {
-        if (key == 'ModeOfInheritance') {
-          var modes = Array.isArray(disease.ConceptMeta.ModesOfInheritance[key]) ? disease.ConceptMeta.ModesOfInheritance[key] : [disease.ConceptMeta.ModesOfInheritance[key]];
-          modes.forEach(function(mode) {
-            if (disease._modeOfInheritance.length > 0) {
-              disease._modeOfInheritance += ", ";
-            }
-            disease._modeOfInheritance += mode.Name;
-          })
-        }
-      }
-    }
-  })
-}
-
-
-function promiseGetGenePanels(disease) {
-    return new Promise(function(resolve, reject) {
-
-
-
-    var searchUrl = GTR_SEARCH_URL
-                    + '&usehistory=y&retmode=json'
-                    + '&term='
-                    +  disease.ConceptId +'[DISCUI]';
-
-
-    $.ajax( searchUrl )
-    .done(function(data) {
-
-      if (data["esearchresult"]["ERROR"] != undefined) {
-        msg = "gene panel search error: " + data["esearchresult"]["ERROR"];
-        console.log(msg);
-        reject(msg);
-      } else {
-        var webenv = data["esearchresult"]["webenv"];
-        var queryKey = data["esearchresult"]["querykey"];
-
-        var summaryUrl = GTR_SUMMARY_URL + "&query_key=" + queryKey + "&retmode=json&WebEnv=" + webenv + "&usehistory=y"
-        $.ajax( summaryUrl )
-        .done(function(sumData) {
-
-          if (sumData.result == null) {
-            if (sumData.esummaryresult && sumData.esummaryresult.length > 0) {
-              sumData.esummaryresult.forEach( function(message) {
-              });
-            }
-            resolve({'disease': disease, 'genePanels': []})
-          } else {
-            var genePanels = [];
-            for (var key in sumData.result) {
-              if (key != 'uids') {
-                genePanels.push(sumData.result[key]);
-              }
-            }
-            computeGenePanelFields(genePanels);
-            resolve({'disease': disease, 'genePanels': genePanels});
-          }
-        })
-        .fail(function() {
-          var msg = "Error in gtr summary. ";
-          console.log(msg);
-          reject(msg);
-        })
-      }
-
-    })
-    .fail(function(data) {
-        var msg = "Error in gtr search. ";
-        console.log(msg)
-        reject(msg);
-    })
-
-  })
-
-}
-
-function computeGenePanelFields(genePanels) {
-  genePanels.forEach(function(genePanel) {
-
-    genePanel._genes = genePanel.analytes
-    .filter(function(analyte) {
-      return analyte.analytetype.toUpperCase() == 'GENE';
-    });
-
-    var geneNames = genePanel._genes.map(function(gene,idx) {
-      return gene.name;
-    });
-
-    genePanel._geneNames = geneNames.join(" ");
-
-    genePanel._geneNamesAbbrev = geneNames.slice(0,20).join(" ");
-    if (geneNames.length > 20) {
-      genePanel._geneNamesAbbrev += "..."
+  return function ( d, type, row ) {
+    // Order, search and type get the original data
+    if ( type !== 'display' ) {
+      return d;
     }
 
-  })
-}
+    if ( typeof d !== 'number' && typeof d !== 'string' ) {
+      return d;
+    }
 
-function xmlToJSON(xmlText) {
-  var theObject = x2js.xml_str2json( xmlText );
-  return theObject;
-}
+    d = d.toString(); // cast numbers
+
+    if ( d.length <= cutoff ) {
+      return d;
+    }
+
+    var shortened = d.substr(0, cutoff-1);
+
+    // Find the last white space character in the string
+    if ( wordbreak ) {
+      shortened = shortened.replace(/\s([^\s]*)$/, '');
+    }
+
+    // Protect against uncontrolled HTML input
+    if ( escapeHtml ) {
+      shortened = esc( shortened );
+    }
+
+    return '<span class="ellipsis" title="'+esc(d)+'">'+shortened+'&#8230;</span>';
+  };
+};

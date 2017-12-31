@@ -35,6 +35,7 @@
   <script type="text/javascript" src="assets/js/xml2json.min.js"></script>
 
   <!-  App -->
+  <script type="text/javascript" src="app/model.js"></script>
   <script type="text/javascript" src="app/globals.js"></script>
   <script type="text/javascript" src="app/constants.js"></script>
   <script type="text/javascript" src="app/app.js"></script>
@@ -49,9 +50,12 @@
 <div id="container">
 
 
-    <h2 >Search GTR </h2>
-    <input type="text" id="input-search-term" class="form-control" placeholder="Enter search term" required="" autofocus="">
-    <button id="search-button" class="btn-raised btn-default btn btn-lg" onclick="performSearch()">Search</button>
+    <div>
+      <h2>Search GTR </h2>
+      <input type="text" id="input-search-term" class="form-control" placeholder="Enter search term" required="" autofocus="">
+      <button id="search-button" class="btn-raised btn-default btn btn-lg" onclick="performSearch()">Search</button>
+      <img id="loading-search" src="assets/images/loading.gif" class="hide">
+    </div>
 
     <div id="diseases-box" class="hide">
       <h2>Diseases/Conditions</h2>

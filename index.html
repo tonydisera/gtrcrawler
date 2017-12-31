@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+<head>
+  <title>GTR Crawler</title>
+
+
+  <!-- libraries -->
+  <script src="assets/js/jquery.1.11.1.min.js"></script>
+
+
+  <!-- Bootstrap Material Design -->
+  <script src="assets/js/material.js"></script>
+  <script src="assets/js/ripples.js"></script>
+
+
+  <!-- fonts -->
+  <link rel="stylesheet" href="assets/css/google-fonts.css">
+  <link rel="stylesheet" href="assets/css/material-icons.css">
+
+
+  <link href="assets/css/bootstrap-material-design.css" rel="stylesheet">
+  <link href="assets/css/ripples.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" id="site-stylesheet" href="assets/css/site.css" />
+
+
+  <!-- DataTable -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.16/datatables.min.css"/>
+  <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.16/datatables.min.js"></script>
+
+
+  <!-- XML to JSON -->
+  <script type="text/javascript" src="assets/js/xml2json.min.js"></script>
+
+  <!-  App -->
+  <script type="text/javascript" src="app/globals.js"></script>
+  <script type="text/javascript" src="app/constants.js"></script>
+  <script type="text/javascript" src="app/app.js"></script>
+
+
+
+</head>
+
+
+<body>
+
+<div id="container">
+
+
+    <h2 >Search GTR </h2>
+    <input type="text" id="input-search-term" class="form-control" placeholder="Enter search term" required="" autofocus="">
+    <button id="search-button" class="btn-raised btn-default btn btn-lg" onclick="performSearch()">Search</button>
+
+    <div id="diseases-box" class="hide">
+      <h2>Diseases/Conditions</h2>
+      <table id="disease-table" class="display" width="100%"></table>
+    </div>
+
+    <div id="gene-panels-box" class="hide">
+      <h2>Gene Panels</h2>
+      <table id="gene-panel-table" class="display" width="100%"></table>
+    </div>
+
+    <div id="genes-box" class="hide">
+      <h2>Genes</h2>
+      <table id="gene-table" class="display" width="100%"></table>
+    </div>
+
+</div>
+</body>
+
+</html>

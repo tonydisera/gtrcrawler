@@ -10,36 +10,37 @@
   <script src="assets/js/jquery.1.11.1.min.js"></script>
 
 
-  <!-- Bootstrap Material Design -->
-  <script src="assets/js/material.js"></script>
-  <script src="assets/js/ripples.js"></script>
+  <!-- Material bootstrap -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.4.3/css/mdb.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.4.3/js/mdb.min.js" rel="stylesheet"/>
 
-
-  <!-- fonts -->
-  <link rel="stylesheet" href="assets/css/google-fonts.css">
-  <link rel="stylesheet" href="assets/css/material-icons.css">
-
-
-  <link href="assets/css/bootstrap-material-design.css" rel="stylesheet">
-  <link href="assets/css/ripples.min.css" rel="stylesheet">
-
-  <link rel="stylesheet" id="site-stylesheet" href="assets/css/site.css" />
 
 
   <!-- DataTable -->
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.16/datatables.min.css"/>
-  <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.16/datatables.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css"/>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.1/css/buttons.dataTables.min.css"/>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.4/css/select.dataTables.min.css"/>
+
+  <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/select/1.2.4/js/dataTables.select.min.js"></script>
 
 
   <!-- XML to JSON -->
   <script type="text/javascript" src="assets/js/xml2json.min.js"></script>
 
-  <!-  App -->
+  <!-- Copy to clipboard -->
+  <script src="https://cdn.jsdelivr.net/npm/clipboard@1/dist/clipboard.min.js"></script>
+
+
+  <!-- Site stylesheet -->
+  <link rel="stylesheet" id="site-stylesheet" href="assets/css/site.css" />
+
+  <!--  App -->
   <script type="text/javascript" src="app/model.js"></script>
   <script type="text/javascript" src="app/globals.js"></script>
   <script type="text/javascript" src="app/constants.js"></script>
   <script type="text/javascript" src="app/app.js"></script>
-
 
 
 </head>
@@ -53,8 +54,8 @@
     <div>
       <h2>Search GTR </h2>
       <input type="text" id="input-search-term" class="form-control" placeholder="Enter search term" required="" autofocus="">
-      <button id="search-button" class="btn-raised btn-default btn btn-lg" onclick="performSearch()">Search</button>
-      <img id="loading-search" src="assets/images/loading.gif" class="hide">
+      <button id="search-button" class="btn btn-outline-primary waves-effect" onclick="performSearch()">Search</button>
+      <img id="loading-search" src="assets/images/loading1.gif" class="hide">
     </div>
 
     <div id="diseases-box" class="hide">
@@ -72,7 +73,9 @@
       <table id="gene-table" class="display" width="100%"></table>
     </div>
 
+    <input id="hidden-input" class="hide" type="text">
 </div>
+
 </body>
 
 </html>

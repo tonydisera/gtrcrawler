@@ -13,8 +13,63 @@ body {
 }
 
 #loading-search {
-  width: 40px;
-  height: 40px;
+  width: 70px;
+  height: 70px;
   vertical-align: middle;
   padding-left: 10px;
 }
+
+.dt-buttons {
+  margin-left: -10px;
+  margin-right: 40px;
+}
+
+.dataTables_filter input {
+    height: 1.1rem;
+}
+.dataTables_wrapper .dataTables_length {
+    float: right;
+    text-alight: right;
+}
+.dataTables_wrapper .dataTables_filter {
+    float: left;
+    text-align: left;
+}
+
+button.dt-button, div.dt-button, a.dt-button {
+    font-size: 12px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+
+    position: relative;
+    display: inline-block;
+    margin-left: 10px;
+    box-sizing: initial;
+    margin-right: initial;
+    margin-bottom: initial;
+    padding: initial;
+    border: initial;
+    border-radius: initial;
+    cursor: initial;
+    font-size: initial;
+    line-height: initial;
+    color: black;
+    white-space: nowrap;
+    overflow: hidden;
+    background-color: initial;
+    background-image: initial;
+    background-image: initial;
+    background-image: initial;
+    background-image: initial;
+    background-image: initial;
+    filter: initial;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    text-decoration: none;
+    outline: none;

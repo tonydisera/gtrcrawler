@@ -286,5 +286,37 @@ class Model {
 
   }
 
+  formatGeneRecs(genes) {
+    const skipFields = {_genePanels: true, _diseases: true, analytetype: true};
+
+    var geneRecs = genes.map(function(gene, idx) {
+      var hdr = "";
+      if (idx == 0) {
+        for (var key in gene) {
+          if (!skipFields[key]) {
+            if (hdr.length > 0) {
+              hdr += "\t";
+            }
+            hdr += key;
+          }
+        }
+        hdr += "\n";
+      }
+      var rec = "";
+      for (var key in gene) {
+        if (!skipFields[key]) {
+          if (rec.length > 0) {
+            rec += "\t";
+          }
+          rec += gene[key];
+        }
+      }
+
+      return hdr + rec;
+    })
+    .join("\n");
+    return geneRecs;
+  }
+
 }
 

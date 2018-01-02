@@ -48,7 +48,7 @@ class Model {
                 }
               } else {
                 var diseases = results.DocumentSummarySet.DocumentSummary;
-                resolve({'searchTerm': searchTerm, 'diseases': diseases});
+                resolve({'searchTerm': searchTerm, 'diseases': Array.isArray(diseases) ? diseases : [diseases]});
               }
             }
           })

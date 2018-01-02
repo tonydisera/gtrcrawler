@@ -13,20 +13,17 @@ function init() {
     scrollY: "150px",
     data: [],
     columns: [
-      //{ title: "ID", data: "_uid" },
       { title: "Name", data: "Title" },
       { title: "OMIM", data:  "_omim" },
       { title: "Mode of Inheritance", data: "_modeOfInheritance" },
       { title: "Gene Panels", data:  "_genePanelCount"  },
       { title: "Genes", data:  "_geneCount"  },
     ],
-    dom: "<'row'<'col-sm-6'><'col-sm-3'f><'col-sm-3'l>>" +
-         "<'row'<'col-sm-12'tr>>" +
-         "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+    dom: DATA_TABLE_DOM,
     buttons: [
         {
             text: 'Select all',
-            className: 'btn btn-outline-primary waves-effect',
+            className: 'btn btn-raised btn-primary',
             action: function ( e, dt, node, config ) {
               $(diseaseTable.rows().nodes()).addClass("selected")
               var selectedDiseases = diseaseTable.rows('.selected').data().toArray();
@@ -35,7 +32,7 @@ function init() {
         },
         {
             text: 'De-select all',
-            className: 'btn btn-outline-primary waves-effect',
+            className: 'btn btn-raised btn-primary',
             action: function ( e, dt, node, config ) {
               $(diseaseTable.rows().nodes()).removeClass("selected")
               var selectedDiseases = diseaseTable.rows('.selected').data().toArray();
@@ -71,13 +68,11 @@ function init() {
       { title: "For", data:  "_diseaseNames", render: $.fn.dataTable.render.ellipsis( 70 ) }
     ],
     "order": [[ 0, "desc" ], [ 1, "asc" ]],
-    dom: "<'row'<'col-sm-6'><'col-sm-3'f><'col-sm-3'l>>" +
-         "<'row'<'col-sm-12'tr>>" +
-         "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+    dom: DATA_TABLE_DOM,
     buttons: [
         {
             text: 'Select all',
-            className: 'btn btn-outline-primary waves-effect',
+            className: 'btn btn-raised btn-primary',
             action: function ( e, dt, node, config ) {
               $(genePanelTable.rows().nodes()).addClass("selected");
               var selectedGenePanels = genePanelTable.rows('.selected').data().toArray();
@@ -86,7 +81,7 @@ function init() {
         },
         {
             text: 'De-select all',
-            className: 'btn btn-outline-primary waves-effect',
+            className: 'btn btn-raised btn-primary',
             action: function ( e, dt, node, config ) {
               $(genePanelTable.rows().nodes()).removeClass("selected");
               var selectedGenePanels = genePanelTable.rows('.selected').data().toArray();
@@ -112,22 +107,17 @@ function init() {
     paging: false,
     scrollY: "800px",
     columns: [
-      //{ title: "ID", data: "geneid"},
       { title: "Name", data: "name" },
       { title: "Panels", data:  "_genePanelCount",  },
       { title: "Conditions", data: "_conditionNames",  render: $.fn.dataTable.render.ellipsis( 60 ) },
-      //{ title: "Gene Panels", data:  "_genePanelNames", render: $.fn.dataTable.render.ellipsis( 50 ) },
-      //{ title: "Disease Count", data:  "_diseaseCount",  },
       { title: "For", data:  "_diseaseNames",  render: $.fn.dataTable.render.ellipsis( 60 )}
     ],
     "order": [[ 1, "desc" ], [0, "asc"]],
-    dom: "<'row'<'col-sm-6'><'col-sm-3'f><'col-sm-3'l>>" +
-         "<'row'<'col-sm-12'tr>>" +
-         "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+    dom: DATA_TABLE_DOM,
     buttons: [
         {
             text: 'Copy',
-            className: 'btn btn-outline-primary waves-effect copy-data-to-clipboard',
+            className: 'btn btn-raised btn-primary copy-data-to-clipboard',
             action: function ( e, dt, node, config ) {
               var geneNames = geneTable.rows().data().map(function(gene) {
                 return gene.name
@@ -138,7 +128,7 @@ function init() {
         },
         {
             text: 'Copy tsv',
-            className: 'btn btn-outline-primary waves-effect copy-data-to-clipboard',
+            className: 'btn btn-raised btn-primary copy-data-to-clipboard',
             action: function ( e, dt, node, config ) {
               geneRecs = model.formatGeneRecs(geneTable.rows().data());
               node.attr("data-clipboard-text", geneRecs);
@@ -219,9 +209,16 @@ function clearTables() {
 
 function showDiseases(diseases) {
   $('#diseases-box').removeClass("hide");
+  $('#disease-count').text(diseases.length);
   diseaseTable.clear();
-  diseaseTable.rows.add(diseases);
-  diseaseTable.draw();
+
+  if (diseases.length > 0) {
+    $('#disease-table_wrapper').removeClass("hide");
+    diseaseTable.rows.add(diseases);
+    diseaseTable.draw();
+  } else {
+    $('#disease-table_wrapper').addClass("hide");
+  }
 }
 
 function showGenePanels(diseases) {
@@ -231,9 +228,15 @@ function showGenePanels(diseases) {
 
   // Merge gene panels that are common across selected diseases
   mergedGenePanels = model.mergeGenePanelsAcrossDiseases(diseases);
+  $('#gene-panel-count').text(mergedGenePanels.length);
 
-  genePanelTable.rows.add(mergedGenePanels);
-  genePanelTable.draw();
+  if (mergedGenePanels.length > 0) {
+    $('#gene-panel-table_wrapper').removeClass("hide");
+    genePanelTable.rows.add(mergedGenePanels);
+    genePanelTable.draw();
+  } else {
+    $('#gene-panel-table_wrapper').addClass("hide");
+  }
 }
 
 
@@ -242,7 +245,8 @@ function showGenes(genePanels) {
   geneTable.clear();
 
   var mergedGenes = model.mergeGenesAcrossPanels(genePanels);
-  $('#gene-count').text("(" + mergedGenes.length + ")");
+  $('#gene-count').text(mergedGenes.length);
+
   geneTable.rows.add(mergedGenes);
   geneTable.draw();
 }

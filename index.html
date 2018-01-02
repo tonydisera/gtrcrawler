@@ -54,32 +54,32 @@
 <div id="container">
 
 
-<nav class="navbar navbar-dark  justify-content-between" style=>
-    <a class="navbar-brand">MedGen Genetic Test Registry</a>
-    <div class="" style="display:inline-block;width:70%">
-        <input id="input-search-term" class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success btn-sm my-0"   onclick="performSearch()" type="submit">Search</button>
-        <img id="loading-search" src="assets/images/loading1.gif" class="hide">
-    </div>
-</nav>
+    <nav class="navbar navbar-dark  justify-content-between" style=>
+        <a class="navbar-brand">MedGen Genetic Test Registry</a>
+        <div class="" style="display:inline-block;width:70%">
+            <input id="input-search-term" class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+            <button class="btn btn-raised btn-success btn-sm"   onclick="performSearch()" type="submit">Search</button>
+            <img id="loading-search" src="assets/images/loading1.gif" class="hide">
+        </div>
+    </nav>
 
     <div style="display:flex">
       <div class="left-section" >
 
         <div class="card card-body hide " id="diseases-box" >
-          <h2>Diseases/Syndromes</h2>
+          <h2>Diseases/Syndromes<span id="disease-count" class="badge badge-secondary counter"/></h2>
           <table id="disease-table" class="display"></table>
         </div>
 
         <div class="card card-body hide" id="gene-panels-box"  >
-          <h2>Gene Panels</h2>
+          <h2>Gene Panels<span id="gene-panel-count" class="badge badge-secondary counter"/></h2>
           <table id="gene-panel-table" class="display"></table>
         </div>
       </div>
 
       <div class="right-section">
         <div class="card card-body hide" id="genes-box" >
-            <h2 >Genes<span id="gene-count"/></h2>
+            <h2 >Genes<span id="gene-count" class="badge badge-secondary counter"/></h2>
             <table id="gene-table" class="display"></table>
           </div>
         </div>

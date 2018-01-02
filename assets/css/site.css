@@ -26,8 +26,12 @@ body {
   vertical-align: middle;
   padding-left: 10px;
 }
-#gene-count {
-  margin-left: 5px;
+
+#gene-table_filter {
+  margin-left: -40px;
+}
+.counter {
+  margin-left: 8px;
 }
 
 .dt-buttons {
@@ -35,15 +39,15 @@ body {
   margin-right: 20px;
 }
 
-.dataTables_filter input {
-    height: 1.1rem;
+.dataTables_wrapper .dataTables_filter input {
+  margin-left: 4px;
 }
+
 .dataTables_wrapper .dataTables_length {
     float: right;
     text-alight: right;
 }
 .dataTables_wrapper .dataTables_filter {
-    float: left;
     text-align: left;
 }
 
@@ -66,11 +70,11 @@ body {
 }
 
 .left-section {
-  width: calc(100% - 480px);
-  margin-right: 30px;
+  width: calc(100% - 470px);
+  margin-right: 10px;
 }
 .right-section {
-  min-width: 450px;
+  min-width: 460px;
 }
 
 button.dt-button, div.dt-button, a.dt-button {

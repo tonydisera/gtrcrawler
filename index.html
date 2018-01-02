@@ -11,8 +11,8 @@
 
 
   <!-- Material bootstrap -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.4.3/css/mdb.min.css" rel="stylesheet"/>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.4.3/js/mdb.min.js" rel="stylesheet"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
+<link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.0.0-beta.4/dist/css/bootstrap-material-design.min.css" integrity="sha384-R80DC0KVBO4GSTw+wZ5x2zn2pu4POSErBkf8/fSFhPXHxvHJydT0CSgAP2Yo2r4I" crossorigin="anonymous">
 
 
 
@@ -48,32 +48,46 @@
 
 <body>
 
+<!--Navbar-->
+
+
 <div id="container">
 
 
-    <div>
-      <h2>Search GTR </h2>
-      <input type="text" id="input-search-term" class="form-control" placeholder="Enter search term" required="" autofocus="">
-      <button id="search-button" class="btn btn-outline-primary waves-effect" onclick="performSearch()">Search</button>
-      <img id="loading-search" src="assets/images/loading1.gif" class="hide">
+<nav class="navbar navbar-dark  justify-content-between" style=>
+    <a class="navbar-brand">MedGen Genetic Test Registry</a>
+    <div class="" style="display:inline-block;width:70%">
+        <input id="input-search-term" class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success btn-sm my-0"   onclick="performSearch()" type="submit">Search</button>
+        <img id="loading-search" src="assets/images/loading1.gif" class="hide">
+    </div>
+</nav>
+
+    <div style="display:flex">
+      <div class="left-section" >
+
+        <div class="card card-body hide " id="diseases-box" >
+          <h2>Diseases/Syndromes</h2>
+          <table id="disease-table" class="display"></table>
+        </div>
+
+        <div class="card card-body hide" id="gene-panels-box"  >
+          <h2>Gene Panels</h2>
+          <table id="gene-panel-table" class="display"></table>
+        </div>
+      </div>
+
+      <div class="right-section">
+        <div class="card card-body hide" id="genes-box" >
+            <h2 >Genes<span id="gene-count"/></h2>
+            <table id="gene-table" class="display"></table>
+          </div>
+        </div>
+      </div>
+
     </div>
 
-    <div id="diseases-box" class="hide">
-      <h2>Diseases/Conditions</h2>
-      <table id="disease-table" class="display" width="100%"></table>
-    </div>
 
-    <div id="gene-panels-box" class="hide">
-      <h2>Gene Panels</h2>
-      <table id="gene-panel-table" class="display" width="100%"></table>
-    </div>
-
-    <div id="genes-box" class="hide">
-      <h2>Genes</h2>
-      <table id="gene-table" class="display" width="100%"></table>
-    </div>
-
-    <input id="hidden-input" class="hide" type="text">
 </div>
 
 </body>

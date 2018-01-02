@@ -7,21 +7,32 @@ body {
   display: none;
 }
 
+.navbar.navbar-dark {
+  color: #e7e5e5;
+  background-color:#083761;
+}
+.navbar.navbar-dark input {
+  color: #e7e5e5;
+}
 #input-search-term {
   width: 200px;
   margin-right: 20px;
+  margin-left: 20px;
+  float: left;
 }
 
 #loading-search {
-  width: 70px;
-  height: 70px;
+  height: 35px;
   vertical-align: middle;
   padding-left: 10px;
+}
+#gene-count {
+  margin-left: 5px;
 }
 
 .dt-buttons {
   margin-left: -10px;
-  margin-right: 40px;
+  margin-right: 20px;
 }
 
 .dataTables_filter input {
@@ -34,6 +45,32 @@ body {
 .dataTables_wrapper .dataTables_filter {
     float: left;
     text-align: left;
+}
+
+.card {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.card-body {
+    -ms-flex: 1 1 auto;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 1.25rem;
+}
+
+
+.card-body h2 {
+  margin-top: 0px;
+}
+
+.left-section {
+  width: calc(100% - 480px);
+  margin-right: 30px;
+}
+.right-section {
+  min-width: 450px;
 }
 
 button.dt-button, div.dt-button, a.dt-button {

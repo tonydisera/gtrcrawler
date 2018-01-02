@@ -9,15 +9,16 @@ function init() {
   // disease table
   //
   diseaseTable = $('#disease-table').DataTable({
+    paging: false,
+    scrollY: "150px",
     data: [],
     columns: [
       //{ title: "ID", data: "_uid" },
       { title: "Name", data: "Title" },
       { title: "OMIM", data:  "_omim" },
       { title: "Mode of Inheritance", data: "_modeOfInheritance" },
-      { title: "Gene Panel Count", data:  "_genePanelCount"  },
-      { title: "Gene Count", data:  "_geneCount"  },
-      { title: "Genes", data:  "_geneNames", render: $.fn.dataTable.render.ellipsis( 50 )},
+      { title: "Gene Panels", data:  "_genePanelCount"  },
+      { title: "Genes", data:  "_geneCount"  },
     ],
     dom: "<'row'<'col-sm-6'><'col-sm-3'f><'col-sm-3'l>>" +
          "<'row'<'col-sm-12'tr>>" +
@@ -57,18 +58,19 @@ function init() {
   // gene panel table
   //
   genePanelTable = $('#gene-panel-table').DataTable({
-
     data: [],
+    paging: false,
+    scrollY: "800px",
     columns: [
       //{ title: "ID", data: "id"},
-      { title: "Name", data: "testname" },
-      { title: "Gene Count", data:  "genecount",  },
-      { title: "Genes", data:  "_geneNames", render: $.fn.dataTable.render.ellipsis( 50 )},
-      { title: "Disease Count", data:  "_diseaseCount",  },
-      { title: "Diseases", data:  "_diseaseNames"},
-      { title: "Target Population", data: "targetpopulation", render: $.fn.dataTable.render.ellipsis( 70 ) }
+      { title: "Gene Count", data:  "genecount"  },
+      { title: "Vendor", data: "offerer", render: $.fn.dataTable.render.ellipsis( 70 )},
+      { title: "Name", data: "testname", render: $.fn.dataTable.render.ellipsis( 70 )},
+      { title: "Genes", data:  "_geneNames", render: $.fn.dataTable.render.ellipsis( 100 )},
+      { title: "Conditions", data:  "_conditionNames", render: $.fn.dataTable.render.ellipsis( 70 ) },
+      { title: "For", data:  "_diseaseNames", render: $.fn.dataTable.render.ellipsis( 70 ) }
     ],
-    "order": [[ 2, "desc" ]],
+    "order": [[ 0, "desc" ], [ 1, "asc" ]],
     dom: "<'row'<'col-sm-6'><'col-sm-3'f><'col-sm-3'l>>" +
          "<'row'<'col-sm-12'tr>>" +
          "<'row'<'col-sm-5'i><'col-sm-7'p>>",
@@ -107,21 +109,24 @@ function init() {
   //
   geneTable = $('#gene-table').DataTable({
     data: [],
+    paging: false,
+    scrollY: "800px",
     columns: [
       //{ title: "ID", data: "geneid"},
       { title: "Name", data: "name" },
-      { title: "Gene Panel Count", data:  "_genePanelCount",  },
-      { title: "Gene Panels", data:  "_genePanelNames", render: $.fn.dataTable.render.ellipsis( 50 ) },
-      { title: "Disease Count", data:  "_diseaseCount",  },
-      { title: "Diseases", data:  "_diseaseNames"}
+      { title: "Panels", data:  "_genePanelCount",  },
+      { title: "Conditions", data: "_conditionNames",  render: $.fn.dataTable.render.ellipsis( 60 ) },
+      //{ title: "Gene Panels", data:  "_genePanelNames", render: $.fn.dataTable.render.ellipsis( 50 ) },
+      //{ title: "Disease Count", data:  "_diseaseCount",  },
+      { title: "For", data:  "_diseaseNames",  render: $.fn.dataTable.render.ellipsis( 60 )}
     ],
-    "order": [[ 2, "desc" ], [1, "asc"]],
+    "order": [[ 1, "desc" ], [0, "asc"]],
     dom: "<'row'<'col-sm-6'><'col-sm-3'f><'col-sm-3'l>>" +
          "<'row'<'col-sm-12'tr>>" +
          "<'row'<'col-sm-5'i><'col-sm-7'p>>",
     buttons: [
         {
-            text: 'Copy gene names',
+            text: 'Copy',
             className: 'btn btn-outline-primary waves-effect copy-data-to-clipboard',
             action: function ( e, dt, node, config ) {
               var geneNames = geneTable.rows().data().map(function(gene) {
@@ -237,6 +242,7 @@ function showGenes(genePanels) {
   geneTable.clear();
 
   var mergedGenes = model.mergeGenesAcrossPanels(genePanels);
+  $('#gene-count').text("(" + mergedGenes.length + ")");
   geneTable.rows.add(mergedGenes);
   geneTable.draw();
 }

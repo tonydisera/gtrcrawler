@@ -148,7 +148,8 @@ class Model {
       disease._geneCount = mergedGenes.length;
       disease._geneNames = mergedGenes.map(function(gene) {
         return gene.name;
-      }).join(" ")
+      })
+      .join(" ")
 
       disease._omim = (disease.ConceptMeta && disease.ConceptMeta.OMIM && disease.ConceptMeta.OMIM.MIM) ? disease.ConceptMeta.OMIM.MIM : "";
 
@@ -179,11 +180,15 @@ class Model {
         return analyte.analytetype.toUpperCase() == 'GENE';
       });
 
-      var geneNames = genePanel._genes.map(function(gene,idx) {
+      genePanel._geneNames = genePanel._genes.map(function(gene,idx) {
         return gene.name;
-      });
+      })
+      .join(" ");
 
-      genePanel._geneNames = geneNames.join(" ");
+      genePanel._conditionNames = genePanel.conditionlist.map(function(condition) {
+        return condition.name;
+      })
+      .join(", ");
 
     })
 
@@ -196,7 +201,7 @@ class Model {
   }
 
   mergeGenePanelsAcrossDiseases(diseases) {
-
+    var me = this;
     var genePanelMap = {};
 
     diseases.forEach(function(disease) {
@@ -216,14 +221,7 @@ class Model {
     for (var key in genePanelMap) {
       var genePanel = genePanelMap[key];
 
-      genePanel._diseaseNames = "";
-      for (var uid in genePanel._diseases) {
-        var theDisease = genePanel._diseases[uid];
-        if (genePanel._diseaseNames.length > 0) {
-          genePanel._diseaseNames += ", ";
-        }
-        genePanel._diseaseNames += theDisease.Title;
-      }
+      genePanel._diseaseNames = me.hashToSimpleList(genePanel._diseases, "Title", ", ");
       genePanel._diseaseCount = Object.keys(genePanel._diseases).length;
 
       mergedGenePanels.push(genePanel);
@@ -233,6 +231,7 @@ class Model {
   }
 
   mergeGenesAcrossPanels(genePanels) {
+    var me = this;
 
     // Merge genes common across selected gene panels
     var geneMap = {};
@@ -241,6 +240,7 @@ class Model {
         var theGene = geneMap[gene.geneid];
         if (theGene == null) {
           gene._genePanels = {};
+          gene._conditions = {};
           gene._diseases = {};
           theGene = gene;
           geneMap[gene.geneid] = theGene;
@@ -250,6 +250,9 @@ class Model {
         for (var uid in genePanel._diseases) {
           theGene._diseases[uid] = genePanel._diseases[uid];
         }
+        genePanel.conditionlist.forEach(function(condition) {
+          theGene._conditions[condition.cuid] = condition;
+        })
 
       })
     })
@@ -258,27 +261,13 @@ class Model {
     for (var key in geneMap) {
       var gene = geneMap[key];
 
-
-      gene._genePanelNames = "";
-      for (var id in gene._genePanels) {
-        var theGenePanel = gene._genePanels[id];
-        if (gene._genePanelNames.length > 0) {
-          gene._genePanelNames += ", ";
-        }
-        gene._genePanelNames += theGenePanel.testname;
-      }
+      gene._genePanelNames = me.hashToSimpleList(gene._genePanels, "testname", ", ");
       gene._genePanelCount = Object.keys(gene._genePanels).length;
 
-
-      gene._diseaseNames = "";
-      for (var uid in gene._diseases) {
-        var theDisease = gene._diseases[uid];
-        if (gene._diseaseNames.length > 0) {
-          gene._diseaseNames += ", ";
-        }
-        gene._diseaseNames += theDisease.Title;
-      }
+      gene._diseaseNames = me.hashToSimpleList(gene._diseases, "Title", ", ");
       gene._diseaseCount = Object.keys(gene._diseases).length;
+
+      gene._conditionNames = me.hashToSimpleList(gene._conditions, "name", ", ");
 
       mergedGenes.push(gene);
     }
@@ -287,6 +276,7 @@ class Model {
   }
 
   formatGeneRecs(genes) {
+    var me = this;
     const skipFields = {_genePanels: true, _diseases: true, analytetype: true};
 
     var geneRecs = genes.map(function(gene, idx) {
@@ -316,6 +306,19 @@ class Model {
     })
     .join("\n");
     return geneRecs;
+  }
+
+  hashToSimpleList(map, fieldName, delim=" ") {
+    var me = this;
+    let buf = "";
+    for (var key in map) {
+      var theObject = map[key];
+      if (buf.length > 0) {
+        buf += delim;
+      }
+      buf += theObject[fieldName];
+    }
+    return buf;
   }
 
 }

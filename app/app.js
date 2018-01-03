@@ -329,6 +329,7 @@ function showGenePanels(diseases) {
     genePanelTable.draw();
     showSelectedCount(genePanelTable, '#gene-panel-count');
   } else {
+    $('#gene-panels-box').addClass("hide");
     $('#gene-panel-table_wrapper').addClass("hide");
   }
 }

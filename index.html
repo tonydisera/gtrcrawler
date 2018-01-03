@@ -6,25 +6,31 @@
   <title>GTR Crawler</title>
 
 
-  <!-- libraries -->
-  <script src="assets/js/jquery.1.11.1.min.js"></script>
-
-
-  <!-- Material bootstrap -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
-<link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.0.0-beta.4/dist/css/bootstrap-material-design.min.css" integrity="sha384-R80DC0KVBO4GSTw+wZ5x2zn2pu4POSErBkf8/fSFhPXHxvHJydT0CSgAP2Yo2r4I" crossorigin="anonymous">
-
+  <!-- JQuery 3 -->
+  <script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
 
 
   <!-- DataTable -->
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css"/>
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.1/css/buttons.dataTables.min.css"/>
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.4/css/select.dataTables.min.css"/>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css"/>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.1/css/buttons.dataTables.css"/>
 
-  <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-  <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
-  <script type="text/javascript" src="https://cdn.datatables.net/select/1.2.4/js/dataTables.select.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.js"></script>
 
+
+  <!-- Material bootstrap -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
+  <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.0.0-beta.4/dist/css/bootstrap-material-design.min.css" integrity="sha384-R80DC0KVBO4GSTw+wZ5x2zn2pu4POSErBkf8/fSFhPXHxvHJydT0CSgAP2Yo2r4I" crossorigin="anonymous">
+  <script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js" integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/bootstrap-material-design@4.0.0-beta.4/dist/js/bootstrap-material-design.js" integrity="sha384-3xciOSDAlaXneEmyOo0ME/2grfpqzhhTcM4cE32Ce9+8DW/04AGoTACzQpphYGYe" crossorigin="anonymous"></script>
+
+  <!-- Alertify -->
+  <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.11.0/build/alertify.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.11.0/build/css/alertify.min.css"/>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.11.0/build/css/themes/bootstrap.min.css"/>
 
   <!-- XML to JSON -->
   <script type="text/javascript" src="assets/js/xml2json.min.js"></script>
@@ -58,32 +64,40 @@
         <a class="navbar-brand">MedGen Genetic Test Registry</a>
         <div class="" style="display:inline-block;width:70%">
             <input id="input-search-term" class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-            <button class="btn btn-raised btn-success btn-sm"   onclick="performSearch()" type="submit">Search</button>
+            <button class="btn btn-raised btn-primary btn-sm"   onclick="performSearch()" type="submit">Search</button>
             <img id="loading-search" src="assets/images/loading1.gif" class="hide">
         </div>
     </nav>
 
     <div style="display:flex">
-      <div class="left-section" >
+
+      <div class="main-section" >
 
         <div class="card card-body hide " id="diseases-box" >
-          <h2>Diseases/Syndromes<span id="disease-count" class="badge badge-secondary counter"/></h2>
+          <div>
+            <h5 class="name">Diseases/Syndromes</h5>
+            <span id="disease-count" class="alert-primary counter"/>
+          </div>
           <table id="disease-table" class="display"></table>
         </div>
 
         <div class="card card-body hide" id="gene-panels-box"  >
-          <h2>Gene Panels<span id="gene-panel-count" class="badge badge-secondary counter"/></h2>
+          <div>
+            <h5 class="name">Gene Panels</h5>
+            <span id="gene-panel-count" class="alert-primary counter"/>
+          </div>
           <table id="gene-panel-table" class="display"></table>
+        </div>
+
+        <div class="card card-body hide" id="genes-box" >
+          <div>
+            <h5 class="name">Genes</h5>
+            <span id="gene-count" class="alert-primary counter"/>
+          </div>
+          <table id="gene-table" class="display"></table>
         </div>
       </div>
 
-      <div class="right-section">
-        <div class="card card-body hide" id="genes-box" >
-            <h2 >Genes<span id="gene-count" class="badge badge-secondary counter"/></h2>
-            <table id="gene-table" class="display"></table>
-          </div>
-        </div>
-      </div>
 
     </div>
 

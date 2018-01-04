@@ -35,7 +35,7 @@ class HorizontalBarChart {
 
     var w = $(me.container[0]).innerWidth();
 
-    var main_margin = {top: 10, right: 10, bottom: 30, left: 50},
+    var main_margin = {top: 10, right: 10, bottom: 30, left: 60},
         main_width = w - main_margin.left - main_margin.right,
         main_height = 400 - main_margin.top - main_margin.bottom;
 

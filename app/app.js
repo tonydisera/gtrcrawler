@@ -93,7 +93,7 @@ function init() {
             text: 'De-select all',
             className: 'btn btn-raised btn-default',
             action: function ( e, dt, node, config ) {
-              delectGenePanels();
+              deselectGenePanels();
             }
         }
 

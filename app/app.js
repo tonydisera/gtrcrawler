@@ -15,6 +15,7 @@ function init() {
     scrollCollapse: true,
     data: [],
     columns: [
+      { title: "",     data: "_rowNumber"},
       { title: "Name", data: "Title" },
       { title: "OMIM", data:  "_omim" },
       { title: "Mode of Inheritance", data: "_modeOfInheritance" },
@@ -40,7 +41,13 @@ function init() {
 
     ]
   });
-  diseaseTable.buttons().container().appendTo( $('.col-sm-6:eq(0)', diseaseTable.table().container()));
+  diseaseTable.buttons().container().appendTo( $('.data-table-buttons', diseaseTable.table().container()));
+  diseaseTable.on( 'order.dt search.dt', function () {
+    diseaseTable.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+      cell.innerHTML = i+1;
+    });
+  })
+  .draw();
 
   diseaseTable.on( 'click', 'tr', function () {
     $(this).toggleClass('selected');
@@ -55,17 +62,17 @@ function init() {
   genePanelTable = $('#gene-panel-table').DataTable({
     data: [],
     paging:         false,
-    scrollY:        '25vh',
+    scrollY:        '20vh',
     scrollCollapse: true,
     columns: [
-      //{ title: "ID", data: "id"},
+      { title: "", data: "_rowNumber" },
       { title: "Genes", data:  "genecount"  },
       { title: "Vendor", data: "offerer", render: $.fn.dataTable.render.ellipsis( 150 )},
       { title: "Name", data: "testname", render: $.fn.dataTable.render.ellipsis( 100 )},
       { title: "Conditions", data:  "_conditionNames", render: $.fn.dataTable.render.ellipsis( 170 ) },
       { title: "Selected diseases", data:  "_diseaseCount" }
     ],
-    "order": [[ 0, "desc" ], [ 1, "asc" ]],
+    "order": [[ 1, "desc" ], [ 2, "asc" ]],
     dom: DATA_TABLE_DOM,
     buttons: [
         {
@@ -92,8 +99,13 @@ function init() {
 
     ]
   });
-  genePanelTable.buttons().container().appendTo( $('.col-sm-6:eq(0)', genePanelTable.table().container()));
-
+  genePanelTable.buttons().container().appendTo( $('.data-table-buttons', genePanelTable.table().container()));
+  genePanelTable.on( 'order.dt search.dt', function () {
+    genePanelTable.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+      cell.innerHTML = i+1;
+    });
+  })
+  .draw();
   genePanelTable.on( 'click', 'tr', function () {
     $(this).toggleClass('selected');
     var selectedGenePanels = genePanelTable.rows('.selected').data().toArray();
@@ -109,12 +121,13 @@ function init() {
     scrollY:        '25vh',
     scrollCollapse: true,
     columns: [
+      { title: "", data: "_rowNumber" },
       { title: "Name", data: "name" },
       { title: "Panels", data:  "_genePanelCount",  },
       { title: "Conditions", data: "_conditionNames",  render: $.fn.dataTable.render.ellipsis( 200 ) },
       { title: "For", data:  "_diseaseNames",  render: $.fn.dataTable.render.ellipsis( 200 )}
     ],
-    "order": [[ 1, "desc" ], [0, "asc"]],
+    "order": [[ 2, "desc" ], [1, "asc"]],
     dom: DATA_TABLE_DOM,
     buttons: [
         {
@@ -148,8 +161,35 @@ function init() {
 
     ]
   });
-  geneTable.buttons().container().appendTo( $('.col-sm-6:eq(0)', geneTable.table().container()));
+  geneTable.buttons().container().appendTo( $('.data-table-buttons', geneTable.table().container()));
+  geneTable.on( 'order.dt search.dt', function () {
+    geneTable.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+      cell.innerHTML = i+1;
+    });
+  })
+  .draw();
 
+
+
+/*
+  geneHistogramChart = histogramD3()
+                       .width($('body').innerWidth() - 100 )
+                       .height(120)
+                       .margin( {left: 45, right: 0, top: 10, bottom: 30})
+                       .xValue( function(d, i) { return d[0] })
+                       .yValue( function(d, i) { return d[1] })
+                       .yAxisLabel( "Gene panels" )
+                       .formatXTick( function(d,i) {
+                          return d;
+                       })
+                       .tooltip( function(d,i) {
+                          return d3.select(".tooltip");
+                       })
+                       .tooltipText( function(d, i) {
+                          return d[2];
+                       });
+*/
+  geneHistogramChart = new HorizontalBarChart(d3.select('#gene-histogram'));
 
   // Special button to copy to clipboard
   new Clipboard('.copy-data-to-clipboard');
@@ -346,6 +386,17 @@ function showGenes(genePanels) {
 
 
   showSelectedCount(geneTable, "#gene-count");
+
+
+/*
+  d3.select("#gene-histogram-chart").select("g").remove();
+  let data = model.getGeneHistogramData(mergedGenes);
+  var selection = d3.select("#gene-histogram-chart")
+                    .datum(data);
+  geneHistogramChart(selection, {outliers: true, averageLine: false});
+*/
+  let data = model.getGeneHistogramData(mergedGenes);
+  geneHistogramChart.init(data);
 }
 
 jQuery.fn.dataTable.render.ellipsis = function ( cutoff, wordbreak, escapeHtml ) {

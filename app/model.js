@@ -140,7 +140,9 @@ class Model {
       return disease.genePanels.length > 0;
     })
 
+    let rowNumber = 1;
     filteredDiseases.forEach(function(disease) {
+      disease._rowNumber = rowNumber++;
       disease._genePanelCount = disease.genePanels.length;
 
 
@@ -173,6 +175,7 @@ class Model {
 
   processGenePanelData(genePanels) {
     var me = this;
+
     genePanels.forEach(function(genePanel) {
 
       genePanel._genes = genePanel.analytes
@@ -223,7 +226,7 @@ class Model {
 
       genePanel._diseaseNames = me.hashToSimpleList(genePanel._diseases, "Title", ", ");
       genePanel._diseaseCount = Object.keys(genePanel._diseases).length;
-
+      genePanel._rowNumber = mergedGenePanels.length+1;
       mergedGenePanels.push(genePanel);
     }
 
@@ -268,6 +271,7 @@ class Model {
       gene._diseaseCount = Object.keys(gene._diseases).length;
 
       gene._conditionNames = me.hashToSimpleList(gene._conditions, "name", ", ");
+      gene._rowNumber      = mergedGenes.length+1;
 
       mergedGenes.push(gene);
     }
@@ -306,6 +310,35 @@ class Model {
     })
     .join("\n");
     return geneRecs;
+  }
+
+
+  getGeneHistogramData(genes) {
+    var histoData = [];
+
+    // Sort genes by gene panel count (descending order)
+    var sortedGenes = genes.sort(function(a,b) {
+      return +b._genePanelCount - +a._genePanelCount ;
+    })
+
+    return sortedGenes.map(function(gene, idx) {
+      return {key: idx, name: gene.name, value: +gene._genePanelCount};
+    });
+  }
+
+  getGeneHistogramDataOld(genes) {
+    var histoData = [];
+
+    // Sort genes by gene panel count (descending order)
+    var sortedGenes = genes.sort(function(a,b) {
+      return +b._genePanelCount - +a._genePanelCount ;
+    })
+
+    sortedGenes.forEach(function(gene) {
+      histoData.push([histoData.length, +gene._genePanelCount, gene.name])
+    });
+
+    return histoData;
   }
 
   hashToSimpleList(map, fieldName, delim=" ") {

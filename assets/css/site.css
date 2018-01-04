@@ -23,7 +23,8 @@ body {
 
 .navbar.navbar-dark {
   color: #e7e5e5;
-  background-color:#083761;
+  background-color: #174065;
+  padding: 4px 10px 1px 10px;
 }
 .navbar.navbar-dark input {
   color: #e7e5e5;
@@ -41,9 +42,12 @@ body {
   padding-left: 10px;
 }
 
-
+#gene-histogram {
+  min-width: 500px;
+}
 .card-body h5 {
   display: inline-block;
+  width: 260px;
 }
 
 .card-body .counter {
@@ -53,6 +57,91 @@ body {
   vertical-align: top;
   display: inline-block;
 }
+
+/* Histogram */
+/*
+.bar rect {
+  fill: #2d8fc1;
+  shape-rendering: crispEdges;
+}
+
+.bar rect.unselected {
+    fill: #9C9E9F;
+}
+
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis {
+  font-size: 9px;
+}
+.y.axis {
+  font-size: 9px;
+}
+div.tooltip {
+  position: absolute;
+  text-align: center;
+  z-index:20;
+  color:white;
+  padding: 4px 6px 4px 6px;
+  font: 11px arial;
+  background: rgb(80,80,80);
+  border: 0px;
+  border-radius: 4px;
+  pointer-events: none;
+}
+*/
+
+#title {
+  font-size: 20px;
+  padding-bottom: 10px;
+  padding-top: 20px;
+  font-weight: 300;
+}
+
+#explanation {
+  font-size: 12px;
+  max-width: 620px;
+  margin: 0 auto;
+  padding-top: 10px;
+  color: #ababab;
+  font-weight: 300;
+}
+
+.y.axis line {
+  fill: none;
+}
+
+.x.axis line {
+  fill: none;
+  stroke: #e0e0e0;
+  shape-rendering: crispEdges;
+}
+
+.axis path {
+  display: none;
+}
+
+.brush .extent {
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+}
+
+.resize {
+  display: inline !important; /* show when empty */
+  fill: #7A7A7A;
+  fill-opacity: 1;
+  stroke: #7A7A7A;
+  stroke-width: 2px;
+}
+
+.bar {
+  /*shape-rendering: crispEdges;*/
+}
+
 
 /* Material design bootstrap */
 
@@ -64,7 +153,7 @@ body {
 
 .card {
   margin-top: 5px;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
   margin-left: 0px;
   margin-right: 5px;
   font-size: .775rem;
@@ -75,7 +164,7 @@ body {
     -webkit-box-flex: 1;
     -webkit-flex: 1 1 auto;
     flex: 1 1 auto;
-    padding: .775rem;
+    padding: 6px 10px;
 }
 
 
@@ -92,6 +181,10 @@ body {
 /*             */
 #gene-table_filter {
   margin-left: -40px;
+}
+
+#gene-table_wrapper .data-table-controls {
+    margin-left: 30px;
 }
 
 .dt-buttons {
@@ -141,6 +234,7 @@ button.dt-button.disabled, div.dt-button.disabled, a.dt-button.disabled {
 
 .dataTables_wrapper .dataTables_filter label {
   margin-bottom: 0px;
+  font-size: 14px;
 }
 
 .dataTables_wrapper.no-footer .dataTables_scrollBody {
@@ -151,9 +245,14 @@ button.dt-button.disabled, div.dt-button.disabled, a.dt-button.disabled {
   padding-top: 8px;
 }
 
+.data-table-controls {
+  margin-top: -30px;
+  margin-left: 400px;
+}
+
 table.dataTable thead th, table.dataTable thead td {
     border-bottom: 1px solid #a1a0a0;
-    padding: 5px 18px;
+    padding: 6px 18px 2px 18px;
 }
 
 table.dataTable tbody th, table.dataTable tbody td {
@@ -162,13 +261,7 @@ table.dataTable tbody th, table.dataTable tbody td {
 
 button.dt-button, div.dt-button, a.dt-button {
     font-size: 12px !important;
-    padding-left: 10px !important;
-    padding-right: 10px !important;
-    padding-top: 6px !important;
-    padding-bottom: 6px !important;
-    margin-top: 0px !important;
-    margin-bottom: 0px !important;
-
+    padding: 4px 10px !important;
     position: relative;
     display: inline-block;
     margin-left: 10px;

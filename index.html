@@ -12,6 +12,12 @@
   integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
   crossorigin="anonymous"></script>
 
+  <!-- D3 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+
+  <!-- Google fonts -->
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet' type='text/css'>
+
 
   <!-- DataTable -->
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css"/>
@@ -42,7 +48,11 @@
   <!-- Site stylesheet -->
   <link rel="stylesheet" id="site-stylesheet" href="assets/css/site.css" />
 
+
+
   <!--  App -->
+ <!-- <script type="text/javascript" src="app/histogram.d3.js"></script> -->
+  <script type="text/javascript" src="app/horizontalBarChart.d3.js"></script>
   <script type="text/javascript" src="app/model.js"></script>
   <script type="text/javascript" src="app/globals.js"></script>
   <script type="text/javascript" src="app/constants.js"></script>
@@ -61,7 +71,7 @@
 
 
     <nav class="navbar navbar-dark  justify-content-between" style=>
-        <a class="navbar-brand">MedGen Genetic Test Registry</a>
+        <a class="navbar-brand">gene panel.iobio</a>
         <div class="" style="display:inline-block;width:70%">
             <input id="input-search-term" class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
             <button class="btn btn-raised btn-primary btn-sm"   onclick="performSearch()" type="submit">Search</button>
@@ -75,7 +85,7 @@
 
         <div class="card card-body hide " id="diseases-box" >
           <div>
-            <h5 class="name">Diseases/Syndromes</h5>
+            <h5 class="name">MedGen Diseases/Syndromes</h5>
             <span id="disease-count" class="alert-primary counter"/>
           </div>
           <table id="disease-table" class="display"></table>
@@ -94,7 +104,11 @@
             <h5 class="name">Genes</h5>
             <span id="gene-count" class="alert-primary counter"/>
           </div>
-          <table id="gene-table" class="display"></table>
+          <div style="display:flex;">
+            <div id="gene-histogram">
+            </div>
+            <table id="gene-table" class="display"></table>
+          </div>
         </div>
       </div>
 
@@ -103,6 +117,8 @@
 
 
 </div>
+
+<div class="tooltip" style="opacity:0"></div>
 
 </body>
 

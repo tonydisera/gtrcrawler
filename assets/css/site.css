@@ -170,7 +170,7 @@ div.tooltip {
 
 .card {
   margin-top: 5px;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
   margin-left: 0px;
   margin-right: 5px;
   font-size: .775rem;
@@ -207,6 +207,10 @@ div.tooltip {
 .dt-buttons {
   margin-left: -10px;
   margin-right: 20px;
+}
+
+.dataTables_filter input {
+  width: 130px;
 }
 
 button.dt-button:hover:not(.disabled),

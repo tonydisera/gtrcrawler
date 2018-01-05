@@ -4,7 +4,7 @@ let geneTable = null;
 let geneHistogramChart = null;
 let getBarChart = null;
 
-const DATA_TABLE_DOM = "<'row data-table-controls'<'col-sm-9 data-table-buttons's><'col-sm-3 data-table-search'fl>>" +
+const DATA_TABLE_DOM = "<'row data-table-controls'<'col-sm-8 data-table-buttons's><'col-sm-4 data-table-search'fl>>" +
                        "<'row'<'col-sm-12'tr>>" +
                        "<'row'<'col-sm-5'><'col-sm-7'p>>";
 

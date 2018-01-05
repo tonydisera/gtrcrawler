@@ -25,7 +25,7 @@
 
   <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
   <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.js"></script>
-
+  <script type="text/javascript" src="assets/js/dataTables.scrollResize.js"></script>
 
   <!-- Material bootstrap -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
@@ -74,16 +74,16 @@
         <a class="navbar-brand">gene panel.iobio</a>
         <div class="" style="display:inline-block;width:70%">
             <input id="input-search-term" class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-            <button class="btn btn-raised btn-primary btn-sm"   onclick="performSearch()" type="submit">Search</button>
+            <button class="btn btn-raised btn-success btn-sm"   onclick="performSearch()" type="submit">Search</button>
             <img id="loading-search" src="assets/images/loading1.gif" class="hide">
         </div>
     </nav>
 
-    <div style="display:flex">
+    <div style="display:flex" >
 
-      <div class="left-section" >
+      <div class="left-section" style="display:flex;flex-flow:column;height:calc(100vh - 50px)" >
 
-        <div class="card card-body hide " id="diseases-box" >
+        <div class="card card-body hide " style="flex:0 0 230px;" id="diseases-box" >
           <div>
             <h5 class="name">MedGen Diseases/Syndromes</h5>
             <span id="disease-count" class="alert-primary counter"/>
@@ -91,7 +91,7 @@
           <table id="disease-table" class="display"></table>
         </div>
 
-        <div class="card card-body hide" id="gene-panels-box"  >
+        <div class="card card-body hide" style="flex:1 1 auto;" id="gene-panels-box"  >
           <div>
             <h5 class="name">Gene Panels</h5>
             <span id="gene-panel-count" class="alert-primary counter"/>
@@ -100,7 +100,7 @@
         </div>
     </div>
 
-    <div class="right-section">
+    <div class="right-section" style="height:calc(100vh - 50px)">
 
         <div class="card card-body hide" id="genes-box" >
           <div>

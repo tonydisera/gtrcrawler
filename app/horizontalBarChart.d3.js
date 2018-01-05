@@ -1,96 +1,99 @@
-class HorizontalBarChart {
+function HorizontalBarChart() {
 
-	constructor(container) {
-    this.container = container;
-    this.data = []
-    this.svg = null;
-    this.defs = null;
-    this.gBrush = null;
-    this.brush = null;
-    this.main_xScale = null;
-    this.mini_xScale = null;
-    this.main_yScale = null;
-    this.mini_yScale = null;
-    this.main_yZoom = null;
-    this.main_xAxis = null;
-    this.main_yAxis = null;
-    this.mini_width = null;
-    this.textScale = null;
-    this.dispatch = d3.dispatch("barselect");
-    // This adds the "on" methods to our custom exports
-    d3.rebind(this, this.dispatch, "on");
+  var container;
+  var data = []
 
-  }
+  var margin = {top: 10, right: 10, bottom: 30, left: 60};
+  var width  = 300;
+  var height = 400;
+
+  var marginSmall = {top: 10, right: 10, bottom: 30, left: 10};
+  var widthSmall = 100;
+
+  var svg = null;
+  var defs = null;
+
+  var gBrush = null;
+  var brush = null;
+
+  var xScale = null;
+  var xScaleMini = null;
+  var yScale = null;
+
+  var yScaleMini = null;
+  var yZoom = null;
+
+  var xAxis = null;
+  var yAxis = null;
+
+  var widthSmallChart = null;
+  var textScale = null;
+
+  var dispatch = d3.dispatch("barselect");
 
 
-  init(data, options) {
-    let me = this;
+  function chart(theContainer, theData, options) {
 
-    me.data = data;
+    container = theContainer;
+    data = theData;
+
 
 
     /////////////////////////////////////////////////////////////
     ///////////////// Set-up SVG and wrappers ///////////////////
     /////////////////////////////////////////////////////////////
 
-    var width  = options.hasOwnProperty("width") ? options.width : $(me.container[0]).innerWidth();
-    var height = options.hasOwnProperty("height") ? options.height : $(me.container[0]).innerHeight();
+    var widthChart  = width - widthSmall - margin.left - margin.right;
+    var heightChart = height - margin.top - margin.bottom;
 
-    var selectorWidth = options.hasOwnProperty("selectorWidth") ? options.selectorWidth : 100;
+    var heightSmallChart = heightChart - marginSmall.top - marginSmall.bottom;
+    var widthSmallChart  = widthSmall - marginSmall.left - marginSmall.right;
 
-    var main_margin = {top: 10, right: 10, bottom: 30, left: 60},
-        main_width  = width - selectorWidth - main_margin.left - main_margin.right,
-        main_height = height - main_margin.top - main_margin.bottom;
+    container.select("svg").remove();
 
-    var mini_margin = {top: 10, right: 10, bottom: 30, left: 10},
-        mini_height = height - mini_margin.top - mini_margin.bottom;
-    me.mini_width   = selectorWidth - mini_margin.left - mini_margin.right;
-
-    me.container.select("svg").remove();
-
-    me.svg = me.container.append("svg")
+    svg = container.append("svg")
         .attr("class", "svgWrapper")
-        .attr("width", main_width + main_margin.left + main_margin.right + me.mini_width + mini_margin.left + mini_margin.right)
-        .attr("height", main_height + main_margin.top + main_margin.bottom)
+        .attr("width", widthChart + margin.left + margin.right + widthSmallChart + marginSmall.left + marginSmall.right)
+        .attr("height", heightChart + margin.top + margin.bottom)
         .on("mousedown.zoom", null)
         .on("touchstart.zoom", null)
         .on("touchmove.zoom", null)
         .on("touchend.zoom", null);
 
-    var mainGroup = me.svg.append("g")
+    var mainGroup = svg.append("g")
             .attr("class","mainGroupWrapper")
-            .attr("transform","translate(" + main_margin.left + "," + main_margin.top + ")")
+            .attr("transform","translate(" + margin.left + "," + margin.top + ")")
             .append("g") //another one for the clip path - due to not wanting to clip the labels
             .attr("clip-path", "url(#clip)")
             .style("clip-path", "url(#clip)")
             .attr("class","mainGroup")
 
-    var miniGroup = me.svg.append("g")
+    var miniGroup = svg.append("g")
             .attr("class","miniGroup")
-            .attr("transform","translate(" + (main_margin.left + main_width + main_margin.right + mini_margin.left) + "," + mini_margin.top + ")");
+            .attr("transform","translate(" + (margin.left + widthChart + margin.right + marginSmall.left) + "," + marginSmall.top + ")");
 
-    var brushGroup = me.svg.append("g")
+    var brushGroup = svg.append("g")
             .attr("class","brushGroup")
-            .attr("transform","translate(" + (main_margin.left + main_width + main_margin.right + mini_margin.left) + "," + mini_margin.top + ")");
+            .attr("transform","translate(" + (margin.left + widthChart + margin.right + marginSmall.left) + "," + marginSmall.top + ")");
 
     /////////////////////////////////////////////////////////////
     ////////////////////// Initiate scales //////////////////////
     /////////////////////////////////////////////////////////////
 
-    me.main_xScale = d3.scale.linear().range([0, main_width]);
-    me.mini_xScale = d3.scale.linear().range([0, me.mini_width]);
+    xScale = d3.scale.linear().range([0, widthChart]);
+    xScaleMini = d3.scale.linear().range([0, widthSmallChart]);
 
-    me.main_yScale = d3.scale.ordinal().rangeBands([0, main_height], 0.4, 0);
-    me.mini_yScale = d3.scale.ordinal().rangeBands([0, mini_height], 0.4, 0);
+    yScale = d3.scale.ordinal().rangeBands([0, heightChart], 0.4, 0);
+    yScaleMini = d3.scale.ordinal().rangeBands([0, heightSmallChart], 0.4, 0);
 
     //Based on the idea from: http://stackoverflow.com/questions/21485339/d3-brushing-on-grouped-bar-chart
-    me.main_yZoom = d3.scale.linear()
-        .range([0, main_height])
-        .domain([0, main_height]);
+    yZoom = d3.scale.linear()
+        .range([0, heightChart])
+        .domain([0,heightChart]);
 
     //Create x axis object
-    me.main_xAxis = d3.svg.axis()
-      .scale(me.main_xScale)
+    xAxis = d3.svg.axis()
+      .scale(xScale)
       .orient("bottom")
       .ticks(4)
       //.tickSize(0)
@@ -99,18 +102,18 @@ class HorizontalBarChart {
     //Add group for the x axis
     d3.select(".mainGroupWrapper").append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate(" + 0 + "," + (main_height) + ")");
+        .attr("transform", "translate(" + 0 + "," + (heightChart) + ")");
 
     //Create y axis object
-    me.main_yAxis = d3.svg.axis()
-      .scale(me.main_yScale)
+    yAxis = d3.svg.axis()
+      .scale(yScale)
       .orient("left")
       .tickSize(0)
       .outerTickSize(0);
 
     // Add the text label for the x axis
     d3.select(".mainGroupWrapper").append("text")
-        .attr("transform", "translate(" + ((main_width / 2)) + " ," + (main_height + main_margin.bottom) + ")")
+        .attr("transform", "translate(" + ((widthChart / 2)) + " ," + (heightChart + margin.bottom) + ")")
         .style("text-anchor", "middle")
         .text("Gene Panels");
 
@@ -125,20 +128,20 @@ class HorizontalBarChart {
     /////////////////////////////////////////////////////////////
 
     //Update the scales
-    me.main_xScale.domain([0, d3.max(me.data, function(d) { return d.value; })]);
-    me.mini_xScale.domain([0, d3.max(me.data, function(d) { return d.value; })]);
-    me.main_yScale.domain(me.data.map(function(d) { return d.name; }));
-    me.mini_yScale.domain(me.data.map(function(d) { return d.name; }));
+    xScale.domain([0, d3.max(data, function(d) { return d.value; })]);
+    xScaleMini.domain([0, d3.max(data, function(d) { return d.value; })]);
+    yScale.domain(data.map(function(d) { return d.name; }));
+    yScaleMini.domain(data.map(function(d) { return d.name; }));
 
     //Create the visual part of the y axis
-    d3.select(".mainGroup").select(".y.axis").call(me.main_yAxis);
-    d3.select(".mainGroupWrapper").select(".x.axis").call(me.main_xAxis);
+    d3.select(".mainGroup").select(".y.axis").call(yAxis);
+    d3.select(".mainGroupWrapper").select(".x.axis").call(xAxis);
 
     /////////////////////////////////////////////////////////////
     ///////////////////// Label axis scales /////////////////////
     /////////////////////////////////////////////////////////////
 
-    me.textScale = d3.scale.linear()
+    textScale = d3.scale.linear()
       .domain([15,50])
       .range([12,6])
       .clamp(true);
@@ -147,58 +150,57 @@ class HorizontalBarChart {
     ///////////////////////// Create brush //////////////////////
     /////////////////////////////////////////////////////////////
 
-    //What should the first extent of the brush become - a bit arbitrary this
-    //var brushExtent = Math.max( 1, Math.min( 20, Math.round(me.data.length*0.2) ) );
+    //What should the first extent of the brush become
     var brushExtent = 50;
-    var yExtentEnd = brushExtent >= me.data.length ? me.mini_yScale.rangeExtent()[1] : me.mini_yScale(me.data[brushExtent].name);
+    var yExtentEnd = brushExtent >= data.length ? yScaleMini.rangeExtent()[1] : yScaleMini(data[brushExtent].name);
 
-    me.brush = d3.svg.brush()
-        .y(me.mini_yScale)
-        .extent([me.mini_yScale(me.data[0].name), yExtentEnd])
-        .on("brush", me.brushmove)
+    brush = d3.svg.brush()
+        .y(yScaleMini)
+        .extent([yScaleMini(data[0].name), yExtentEnd])
+        .on("brush", brushmove)
         //.on("brushend", brushend);
 
     //Set up the visual part of the brush
-    me.gBrush = d3.select(".brushGroup").append("g")
+    gBrush = d3.select(".brushGroup").append("g")
       .attr("class", "brush")
-      .call(me.brush);
+      .call(brush);
 
-    me.gBrush.selectAll(".resize")
+    gBrush.selectAll(".resize")
       .append("line")
-      .attr("x2", me.mini_width);
+      .attr("x2", widthSmallChart);
 
-    me.gBrush.selectAll(".resize")
+    gBrush.selectAll(".resize")
       .append("path")
       .attr("d", d3.svg.symbol().type("triangle-up").size(20))
       .attr("transform", function(d,i) {
-        return i ? "translate(" + (me.mini_width/2) + "," + 4 + ") rotate(180)" : "translate(" + (me.mini_width/2) + "," + -4 + ") rotate(0)";
+        return i ? "translate(" + (widthSmallChart/2) + "," + 4 + ") rotate(180)" : "translate(" + (widthSmallChart/2) + "," + -4 + ") rotate(0)";
       });
 
-    me.gBrush.selectAll("rect")
-      .attr("width", me.mini_width);
+    gBrush.selectAll("rect")
+      .attr("width", widthSmallChart);
 
     //On a click recenter the brush window
-    me.gBrush.select(".background")
-      .on("mousedown.brush", me.brushcenter)
-      .on("touchstart.brush", me.brushcenter);
+    gBrush.select(".background")
+      .on("mousedown.brush", brushcenter)
+      .on("touchstart.brush", brushcenter);
 
     ///////////////////////////////////////////////////////////////////////////
     /////////////////// Create a rainbow gradient - for fun ///////////////////
     ///////////////////////////////////////////////////////////////////////////
 
-    me.defs = me.svg.append("defs")
+    defs = svg.append("defs")
 
     //Create two separate gradients for the main and mini bar - just because it looks fun
-    me.createGradient("gradient-rainbow-main", "60%");
-    me.createGradient("gradient-rainbow-mini", "13%");
+    createGradient("gradient-rainbow-main", "60%");
+    createGradient("gradient-rainbow-mini", "13%");
 
     //Add the clip path for the main bar chart
-    me.defs.append("clipPath")
+    defs.append("clipPath")
       .attr("id", "clip")
       .append("rect")
-	    .attr("x", -main_margin.left)
-      .attr("width", main_width + main_margin.left)
-      .attr("height", main_height);
+	    .attr("x", -margin.left)
+      .attr("width", widthChart + margin.left)
+      .attr("height", heightChart);
 
     /////////////////////////////////////////////////////////////
     /////////////// Set-up the mini bar chart ///////////////////
@@ -206,58 +208,57 @@ class HorizontalBarChart {
 
     //The mini brushable bar
     //DATA JOIN
-    var mini_bar = d3.select(".miniGroup").selectAll(".bar")
-      .data(me.data, function(d) { return d.key; });
+    var barMini = d3.select(".miniGroup").selectAll(".bar")
+      .data(data, function(d) { return d.key; });
 
     //UDPATE
-    mini_bar
-      .attr("width", function(d) { return me.mini_xScale(d.value); })
-      .attr("y", function(d,i) { return me.mini_yScale(d.name); })
-      .attr("height", me.mini_yScale.rangeBand());
+    barMini
+      .attr("width", function(d) { return xScaleMini(d.value); })
+      .attr("y", function(d,i) { return yScaleMini(d.name); })
+      .attr("height", yScaleMini.rangeBand());
 
     //ENTER
-    mini_bar.enter().append("rect")
+    barMini.enter().append("rect")
       .attr("class", "bar")
       .attr("x", 0)
-      .attr("width", function(d) { return me.mini_xScale(d.value); })
-      .attr("y", function(d,i) { return me.mini_yScale(d.name); })
-      .attr("height", me.mini_yScale.rangeBand())
+      .attr("width", function(d) { return xScaleMini(d.value); })
+      .attr("y", function(d,i) { return yScaleMini(d.name); })
+      .attr("height", yScaleMini.rangeBand())
       .style("fill", "url(#gradient-rainbow-mini)");
 
     //EXIT
-    mini_bar.exit()
+    barMini.exit()
       .remove();
 
     //Start the brush
-    me.gBrush.call(me.brush.event);
+    gBrush.call(brush.event);
 
   }//init
 
   //Function runs on a brush move - to update the big bar chart
-  update() {
-    var me = geneBarChart;
+  var update = function() {
     /////////////////////////////////////////////////////////////
     ////////// Update the bars of the main bar chart ////////////
     /////////////////////////////////////////////////////////////
     //DATA JOIN
     var bar = d3.select(".mainGroup").selectAll(".bar")
-        .data(me.data, function(d) { return d.key; });
+        .data(data, function(d) { return d.key; });
 
     //UPDATE
     bar
       .attr("x", 0)
-      .attr("width", function(d) { return me.main_xScale(d.value); })
-      .attr("y", function(d,i) { return me.main_yScale(d.name); })
-      .attr("height", me.main_yScale.rangeBand());
+      .attr("width", function(d) { return xScale(d.value); })
+      .attr("y", function(d,i) { return yScale(d.name); })
+      .attr("height", yScale.rangeBand());
 
     //ENTER
     bar.enter().append("rect")
       .attr("class", "bar")
       .style("fill", "url(#gradient-rainbow-main)")
       .attr("x", 0)
-      .attr("width", function(d) { return me.main_xScale(d.value); })
-      .attr("y", function(d,i) { return me.main_yScale(d.name); })
-      .attr("height", me.main_yScale.rangeBand());
+      .attr("width", function(d) { return xScale(d.value); })
+      .attr("y", function(d,i) { return yScale(d.name); })
+      .attr("height", yScale.rangeBand());
 
     //EXIT
     bar.exit()
@@ -270,35 +271,34 @@ class HorizontalBarChart {
   /////////////////////////////////////////////////////////////
 
   //First function that runs on a brush move
-  brushmove() {
-    var me = geneBarChart;
+  var brushmove = function() {
 
-    var extent = me.brush.extent();
+    var extent = brush.extent();
 
     //Reset the part that is visible on the big chart
-    var originalRange = me.main_yZoom.range();
-    me.main_yZoom.domain( extent );
+    var originalRange = yZoom.range();
+    yZoom.domain( extent );
 
     /////////////////////////////////////////////////////////////
     ///////////////////// Update the axis ///////////////////////
     /////////////////////////////////////////////////////////////
 
     //Update the domain of the x & y scale of the big bar chart
-    me.main_yScale.domain(me.data.map(function(d) { return d.name; }));
-    me.main_yScale.rangeBands( [ me.main_yZoom(originalRange[0]), me.main_yZoom(originalRange[1]) ], 0.4, 0);
+    yScale.domain(data.map(function(d) { return d.name; }));
+    yScale.rangeBands( [ yZoom(originalRange[0]), yZoom(originalRange[1]) ], 0.4, 0);
 
     //Update the y axis of the big chart
     d3.select(".mainGroup")
       .select(".y.axis")
-      .call(me.main_yAxis);
+      .call(yAxis);
 
     /////////////////////////////////////////////////////////////
     /////////////// Update the mini bar fills ///////////////////
     /////////////////////////////////////////////////////////////
 
     //Update the colors within the mini bar chart
-    var selected = me.mini_yScale.domain()
-      .filter(function(d) { return (extent[0] - me.mini_yScale.rangeBand() + 1e-2 <= me.mini_yScale(d)) && (me.mini_yScale(d) <= extent[1] - 1e-2); });
+    var selected = yScaleMini.domain()
+      .filter(function(d) { return (extent[0] - yScaleMini.rangeBand() + 1e-2 <= yScaleMini(d)) && (yScaleMini(d) <= extent[1] - 1e-2); });
 
     //Update the colors of the mini chart - Make everything outside the brush grey
     d3.select(".miniGroup").selectAll(".bar")
@@ -306,12 +306,12 @@ class HorizontalBarChart {
 
     //Update the label size
     d3.selectAll(".y.axis text")
-      .style("font-size", me.textScale(selected.length));
+      .style("font-size", textScale(selected.length));
 
-    me.dispatch.barselect(selected);
+    dispatch.barselect(selected);
 
     //Update the big bar chart
-    me.update();
+    update();
 
   }//brushmove
 
@@ -321,22 +321,21 @@ class HorizontalBarChart {
 
   //Based on http://bl.ocks.org/mbostock/6498000
   //What to do when the user clicks on another location along the brushable bar chart
-  brushcenter() {
-    var me = geneBarChart;
+  var brushcenter = function() {
 
     var target = d3.event.target,
-        extent = me.brush.extent(),
+        extent = brush.extent(),
         size = extent[1] - extent[0],
-        range = me.mini_yScale.range(),
+        range = yScaleMini.range(),
         y0 = d3.min(range) + size / 2,
-        y1 = d3.max(range) + me.mini_yScale.rangeBand() - size / 2,
+        y1 = d3.max(range) + yScaleMini.rangeBand() - size / 2,
         center = Math.max( y0, Math.min( y1, d3.mouse(target)[1] ) );
 
     d3.event.stopPropagation();
 
-    me.gBrush
-        .call(me.brush.extent([center - size / 2, center + size / 2]))
-        .call(me.brush.event);
+    gBrush
+        .call(brush.extent([center - size / 2, center + size / 2]))
+        .call(brush.event);
 
   }//brushcenter
 
@@ -346,16 +345,11 @@ class HorizontalBarChart {
   /////////////////////////////////////////////////////////////
 
   //Create a gradient
-  createGradient(idName, endPerc) {
-    var me = this;
+  var createGradient = function(idName, endPerc) {
 
-    //var coloursRainbow = ["#EFB605", "#E9A501", "#E48405", "#E34914", "#DE0D2B", "#CF003E", "#B90050", "#A30F65", "#8E297E", "#724097", "#4F54A8", "#296DA4", "#0C8B8C", "#0DA471", "#39B15E", "#7EB852"];
-    //var coloursRainbow = ["#4F54A8", "#296DA4", "#0C8B8C", "#0DA471", "#39B15E", "#7EB852"];
-
-    //var colors = ['#41c4b1', '#41b6c4','#2c7fb8','#253494'];
     var colors = [ '#7fcdbb','#41b6c4','#1d91c0','#225ea8','#0c2c84'];
 
-    me.defs.append("linearGradient")
+    defs.append("linearGradient")
       .attr("id", idName)
       .attr("gradientUnits", "userSpaceOnUse")
       .attr("x1", "0%").attr("y1", "0%")
@@ -367,4 +361,33 @@ class HorizontalBarChart {
       .attr("stop-color", function(d) { return d; });
   }//createGradient
 
+
+  chart.margin = function(_) {
+    if (!arguments.length) return margin;
+    margin = _;
+    return chart;
+  };
+  chart.height = function(_) {
+    if (!arguments.length) return height;
+    height = _;
+    return chart;
+  };
+  chart.width = function(_) {
+    if (!arguments.length) return width;
+    width = _;
+    return chart;
+  };
+  chart.marginSmall = function(_) {
+    if (!arguments.length) return marginSmall;
+    marginSmall = _;
+    return chart;
+  };
+  chart.widthSmall = function(_) {
+    if (!arguments.length) return widthSmall;
+    widthSmall = _;
+    return chart;
+  };
+
+  d3.rebind(chart, dispatch, "on");
+  return chart;
 }

@@ -81,9 +81,9 @@
 
     <div style="display:flex" >
 
-      <div class="left-section" style="display:flex;flex-flow:column;height:calc(100vh - 50px)" >
+      <div class="left-section" style="width:100%;display:flex;flex-flow:column;height:calc(100vh - 50px)" >
 
-        <div class="card card-body hide " style="flex:0 0 230px;" id="diseases-box" >
+        <div class="card card-body hide " style="flex:0 1 180px;" id="diseases-box" >
           <div>
             <h5 class="name">MedGen Diseases/Syndromes</h5>
             <span id="disease-count" class="alert-primary counter"/>
@@ -91,18 +91,34 @@
           <table id="disease-table" class="display"></table>
         </div>
 
-        <div class="card card-body hide" style="flex:1 1 auto;" id="gene-panels-box"  >
+        <div class="card card-body  hide" style="flex:1 1 auto;" id="gene-panels-box" >
           <div>
             <h5 class="name">Gene Panels</h5>
             <span id="gene-panel-count" class="alert-primary counter"/>
           </div>
           <table id="gene-panel-table" class="display"></table>
         </div>
+
+        <div class="card card-body hide" style="flex:1 1 auto;" id="genes-box"  >
+          <div>
+            <h5 class="name">Genes</h5>
+            <span id="gene-count" class="alert-primary counter"/>
+          </div>
+          <div  style="display:flex;height:100%">
+            <div style="flex: 0 0 400">
+              <div id="gene-bar-chart"></div>
+            </div>
+            <div style="flex: 1 1 auto;">
+              <table id="gene-table" class="display"></table>
+            </div>
+          </div>
+        </div>
     </div>
 
+<!--
     <div class="right-section" style="height:calc(100vh - 50px)">
 
-        <div class="card card-body hide" id="genes-box" >
+        <div class="card card-body hide" id="genes-chart-box" >
           <div>
             <h5 class="name">Genes</h5>
             <span id="gene-count" class="alert-primary counter"></span>
@@ -115,6 +131,7 @@
         </div>
       </div>
     </div>
+-->
 
     </div>
 

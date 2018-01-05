@@ -10,9 +10,14 @@ function init() {
   // disease table
   //
   diseaseTable = $('#disease-table').DataTable({
-    paging:         false,
-    scrollY:        170,
+//    paging:         false,
+//    scrollY:        170,
+//    scrollCollapse: true,
+    data: [],
+    scrollResize: true,
+    scrollY: 200,
     scrollCollapse: true,
+    paging: false,
     data: [],
     columns: [
       { title: "",     data: "_rowNumber"},
@@ -62,7 +67,7 @@ function init() {
   genePanelTable = $('#gene-panel-table').DataTable({
     data: [],
     scrollResize: true,
-    scrollY: 100,
+    scrollY: 320,
     scrollCollapse: true,
     paging: false,
     columns: [
@@ -116,12 +121,12 @@ function init() {
   //
   // gene  table
   //
-  /*
   geneTable = $('#gene-table').DataTable({
     data: [],
-    paging:         false,
-    scrollY:        '25vh',
+    scrollResize: true,
+    scrollY: 420,
     scrollCollapse: true,
+    paging: false,
     columns: [
       { title: "", data: "_rowNumber" },
       { title: "Name", data: "name" },
@@ -155,7 +160,7 @@ function init() {
         },
         {
             text: 'Copy selected',
-            className: 'btn btn-raised btn-success copy-data-to-clipboard',
+            className: 'btn btn-raised btn-success copy-data-to-clipboard copy-genes-to-clipboard',
             action: function ( e, dt, node, config ) {
               copyGenesToClipboard(node);
             }
@@ -170,14 +175,15 @@ function init() {
     });
   })
   .draw();
-  */
+
 
   geneBarChart = HorizontalBarChart()
     .width(300)
-    .height(bodyHeight() - 50)
+    .height(300)
     .widthSmall(80)
     .on("barselect", function(selectedGeneNames) {
       model.selectedGeneNames = selectedGeneNames;
+      selectGenes({selected: model.selectedGeneNames});
       $("#gene-count").text(model.selectedGeneNames.length + " of " + model.mergedGenes.length);
     });
 
@@ -228,14 +234,25 @@ function deselectGenePanels() {
   showGenes(selectedGenePanels);
 }
 
-/*
+
 function selectGenes(filterObject) {
   $(geneTable.rows().nodes()).removeClass("selected");
   if (filterObject && filterObject.hasOwnProperty("top")) {
+
     var indices = $(geneTable.rows()[0]).slice(0,filterObject.top);
     $(geneTable.rows(indices).nodes()).addClass("selected");
+
+  } if (filterObject && filterObject.hasOwnProperty("selected")) {
+
+    var indices = geneTable.rows().eq( 0 ).filter( function (rowIdx) {
+      return filterObject.selected.indexOf(geneTable.row(rowIdx).data().name) >= 0;
+    } );
+    $(geneTable.rows(indices).nodes()).addClass("selected");
+
   } else {
+
     $(geneTable.rows().nodes()).addClass("selected");
+
   }
   showSelectedCount(geneTable, '#gene-count');
 }
@@ -244,17 +261,16 @@ function deselectGenes() {
   var selectedGenes = geneTable.rows('.selected').data().toArray();
   showSelectedCount(geneTable, '#gene-count');
 }
-*/
+
 
 function copyGenesToClipboard() {
-  /*var geneNames = geneTable.rows(".selected").data().map(function(gene) {
+  model.selectedGeneNames = geneTable.rows(".selected").data().map(function(gene) {
     return gene.name
   })
-  */
   if (model.selectedGeneNames.length == 0) {
     alertify.error("Please select genes first.")
   } else {
-    $('#copy-genes-to-clipboard').attr("data-clipboard-text", model.selectedGeneNames.join(" "));
+    $('.copy-genes-to-clipboard').attr("data-clipboard-text", model.selectedGeneNames.join(" "));
     alertify.success(model.selectedGeneNames.length + ' gene names copied to clipboard.');
   }
 }
@@ -328,7 +344,7 @@ function clearTables() {
 
   diseaseTable.clear();
   genePanelTable.clear();
-  //geneTable.clear();
+  geneTable.clear();
 
 }
 
@@ -372,20 +388,17 @@ function showGenePanels(diseases) {
 
 function showGenes(genePanels) {
   $('#genes-box').removeClass("hide");
-  //geneTable.clear();
+  geneTable.clear();
 
   var mergedGenes = model.mergeGenesAcrossPanels(genePanels);
-
-  //geneTable.rows.add(mergedGenes);
-  //geneTable.draw();
-
-
-  //showSelectedCount(geneTable, "#gene-count");
-
   $('#gene-count').text(mergedGenes.length)
+
+  geneTable.rows.add(mergedGenes);
+  geneTable.draw();
 
   let data = model.getGeneBarChartData(mergedGenes);
   geneBarChart(d3.select('#gene-bar-chart'), data);
+
 }
 
 jQuery.fn.dataTable.render.ellipsis = function ( cutoff, wordbreak, escapeHtml ) {

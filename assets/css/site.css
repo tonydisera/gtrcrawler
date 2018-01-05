@@ -52,9 +52,13 @@ body {
 }
 .card-body h5 {
   display: inline-block;
+  width: 160px;
+}
+
+#diseases-box h5 {
   width: 260px;
 }
-#genes-box.card-body h5 {
+#genes-chart-box.card-body h5 {
   width: initial;
 }
 
@@ -196,14 +200,6 @@ div.tooltip {
 /*             */
 /* Data Tables */
 /*             */
-#gene-table_filter {
-  margin-left: -40px;
-}
-
-#gene-table_wrapper .data-table-controls {
-    margin-left: 30px;
-}
-
 .dt-buttons {
   margin-left: -10px;
   margin-right: 20px;
@@ -267,6 +263,10 @@ button.dt-button.disabled, div.dt-button.disabled, a.dt-button.disabled {
 }
 
 .data-table-controls {
+  margin-top: -30px;
+  margin-left: 300px;
+}
+#diseases-box .data-table-controls {
   margin-top: -30px;
   margin-left: 400px;
 }

@@ -1,6 +1,8 @@
 class Model {
   constructor() {
     this.x2js = new X2JS();
+    this.mergedGenes = null;
+    this.selectedGenes = null;
 
   }
 
@@ -260,7 +262,7 @@ class Model {
       })
     })
 
-    var mergedGenes = [];
+    this.mergedGenes = [];
     for (var key in geneMap) {
       var gene = geneMap[key];
 
@@ -271,11 +273,11 @@ class Model {
       gene._diseaseCount = Object.keys(gene._diseases).length;
 
       gene._conditionNames = me.hashToSimpleList(gene._conditions, "name", ", ");
-      gene._rowNumber      = mergedGenes.length+1;
+      gene._rowNumber      = me.mergedGenes.length+1;
 
-      mergedGenes.push(gene);
+      me.mergedGenes.push(gene);
     }
-    return mergedGenes;
+    return this.mergedGenes;
 
   }
 
@@ -313,12 +315,16 @@ class Model {
   }
 
 
-  getGeneHistogramData(genes) {
-    var histoData = [];
+  getGeneBarChartData(genes) {
 
     // Sort genes by gene panel count (descending order)
+    // Sort genes by gene panel count (descending order)
     var sortedGenes = genes.sort(function(a,b) {
-      return +b._genePanelCount - +a._genePanelCount ;
+      if (a._genePanelCount == b._genePanelCount) {
+        return b._diseaseCount - a._diseaseCount;
+      } else {
+        return b._genePanelCount - a._genePanelCount ;
+      }
     })
 
     return sortedGenes.map(function(gene, idx) {
@@ -326,12 +332,16 @@ class Model {
     });
   }
 
-  getGeneHistogramDataOld(genes) {
+  getGeneHistogramData(genes) {
     var histoData = [];
 
     // Sort genes by gene panel count (descending order)
     var sortedGenes = genes.sort(function(a,b) {
-      return +b._genePanelCount - +a._genePanelCount ;
+      if (a._genePanelCount == b._genePanelCount) {
+        return b._diseaseCount - a._diseaseCount;
+      } else {
+        return b._genePanelCount - a._genePanelCount ;
+      }
     })
 
     sortedGenes.forEach(function(gene) {

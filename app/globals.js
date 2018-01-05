@@ -2,6 +2,7 @@ let diseaseTable = null;
 let genePanelTable = null;
 let geneTable = null;
 let geneHistogramChart = null;
+let getBarChart = null;
 
 const DATA_TABLE_DOM = "<'row data-table-controls'<'col-sm-9 data-table-buttons's><'col-sm-3 data-table-search'fl>>" +
                        "<'row'<'col-sm-12'tr>>" +

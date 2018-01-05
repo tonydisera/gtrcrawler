@@ -11,7 +11,7 @@ function init() {
   //
   diseaseTable = $('#disease-table').DataTable({
     paging:         false,
-    scrollY:        '15vh',
+    scrollY:        '25vh',
     scrollCollapse: true,
     data: [],
     columns: [
@@ -62,7 +62,7 @@ function init() {
   genePanelTable = $('#gene-panel-table').DataTable({
     data: [],
     paging:         false,
-    scrollY:        '20vh',
+    scrollY:        '40vh',
     scrollCollapse: true,
     columns: [
       { title: "", data: "_rowNumber" },
@@ -115,6 +115,7 @@ function init() {
   //
   // gene  table
   //
+  /*
   geneTable = $('#gene-table').DataTable({
     data: [],
     paging:         false,
@@ -124,10 +125,10 @@ function init() {
       { title: "", data: "_rowNumber" },
       { title: "Name", data: "name" },
       { title: "Panels", data:  "_genePanelCount",  },
-      { title: "Conditions", data: "_conditionNames",  render: $.fn.dataTable.render.ellipsis( 200 ) },
-      { title: "For", data:  "_diseaseNames",  render: $.fn.dataTable.render.ellipsis( 200 )}
+      { title: "Diseases", data:  "_diseaseCount",  },
+      { title: "Conditions", data: "_conditionNames",  render: $.fn.dataTable.render.ellipsis( 200 ) }
     ],
-    "order": [[ 2, "desc" ], [1, "asc"]],
+    "order": [[ 2, "desc" ], [3, "asc"]],
     dom: DATA_TABLE_DOM,
     buttons: [
         {
@@ -168,31 +169,18 @@ function init() {
     });
   })
   .draw();
+  */
 
-
-
-/*
-  geneHistogramChart = histogramD3()
-                       .width($('body').innerWidth() - 100 )
-                       .height(120)
-                       .margin( {left: 45, right: 0, top: 10, bottom: 30})
-                       .xValue( function(d, i) { return d[0] })
-                       .yValue( function(d, i) { return d[1] })
-                       .yAxisLabel( "Gene panels" )
-                       .formatXTick( function(d,i) {
-                          return d;
-                       })
-                       .tooltip( function(d,i) {
-                          return d3.select(".tooltip");
-                       })
-                       .tooltipText( function(d, i) {
-                          return d[2];
-                       });
-*/
-  geneHistogramChart = new HorizontalBarChart(d3.select('#gene-histogram'));
+  geneBarChart = new HorizontalBarChart(d3.select('#gene-bar-chart'));
+  geneBarChart.on("barselect", function(selectedGeneNames) {
+    model.selectedGeneNames = selectedGeneNames;
+    $("#gene-count").text(model.selectedGeneNames.length + " of " + model.mergedGenes.length);
+  })
 
   // Special button to copy to clipboard
   new Clipboard('.copy-data-to-clipboard');
+
+  alertify.set('notifier','position', 'top-center');
 
 }
 
@@ -236,6 +224,7 @@ function deselectGenePanels() {
   showGenes(selectedGenePanels);
 }
 
+/*
 function selectGenes(filterObject) {
   $(geneTable.rows().nodes()).removeClass("selected");
   if (filterObject && filterObject.hasOwnProperty("top")) {
@@ -251,16 +240,18 @@ function deselectGenes() {
   var selectedGenes = geneTable.rows('.selected').data().toArray();
   showSelectedCount(geneTable, '#gene-count');
 }
+*/
 
-function copyGenesToClipboard(clipboardButtonNode) {
-  var geneNames = geneTable.rows(".selected").data().map(function(gene) {
+function copyGenesToClipboard() {
+  /*var geneNames = geneTable.rows(".selected").data().map(function(gene) {
     return gene.name
   })
-  if (geneNames.length == 0) {
+  */
+  if (model.selectedGeneNames.length == 0) {
     alertify.error("Please select genes first.")
   } else {
-    clipboardButtonNode.attr("data-clipboard-text", geneNames.join(" "));
-    alertify.success(geneNames.length + ' gene names copied to clipboard.');
+    $('#copy-genes-to-clipboard').attr("data-clipboard-text", model.selectedGeneNames.join(" "));
+    alertify.success(model.selectedGeneNames.length + ' gene names copied to clipboard.');
   }
 }
 
@@ -333,7 +324,7 @@ function clearTables() {
 
   diseaseTable.clear();
   genePanelTable.clear();
-  geneTable.clear();
+  //geneTable.clear();
 
 }
 
@@ -357,7 +348,7 @@ function showGenePanels(diseases) {
   genePanelTable.clear();
 
   $('#genes-box').addClass("hide");
-  geneTable.clear();
+  //geneTable.clear();
 
 
   // Merge gene panels that are common across selected diseases
@@ -377,26 +368,20 @@ function showGenePanels(diseases) {
 
 function showGenes(genePanels) {
   $('#genes-box').removeClass("hide");
-  geneTable.clear();
+  //geneTable.clear();
 
   var mergedGenes = model.mergeGenesAcrossPanels(genePanels);
 
-  geneTable.rows.add(mergedGenes);
-  geneTable.draw();
+  //geneTable.rows.add(mergedGenes);
+  //geneTable.draw();
 
 
-  showSelectedCount(geneTable, "#gene-count");
+  //showSelectedCount(geneTable, "#gene-count");
 
+  $('#gene-count').text(mergedGenes.length)
 
-/*
-  d3.select("#gene-histogram-chart").select("g").remove();
-  let data = model.getGeneHistogramData(mergedGenes);
-  var selection = d3.select("#gene-histogram-chart")
-                    .datum(data);
-  geneHistogramChart(selection, {outliers: true, averageLine: false});
-*/
-  let data = model.getGeneHistogramData(mergedGenes);
-  geneHistogramChart.init(data);
+  let data = model.getGeneBarChartData(mergedGenes);
+  geneBarChart.init(data, {width: 300, height: bodyHeight() - 50, selectorWidth: 70});
 }
 
 jQuery.fn.dataTable.render.ellipsis = function ( cutoff, wordbreak, escapeHtml ) {
@@ -439,3 +424,8 @@ jQuery.fn.dataTable.render.ellipsis = function ( cutoff, wordbreak, escapeHtml )
     return '<span class="ellipsis" title="'+esc(d)+'">'+shortened+'&#8230;</span>';
   };
 };
+
+function bodyHeight() {
+  return window.innerHeight - $('.navbar').outerHeight() - 5;
+}
+

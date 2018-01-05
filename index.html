@@ -81,7 +81,7 @@
 
     <div style="display:flex">
 
-      <div class="main-section" >
+      <div class="left-section" >
 
         <div class="card card-body hide " id="diseases-box" >
           <div>
@@ -98,20 +98,23 @@
           </div>
           <table id="gene-panel-table" class="display"></table>
         </div>
+    </div>
+
+    <div class="right-section">
 
         <div class="card card-body hide" id="genes-box" >
           <div>
             <h5 class="name">Genes</h5>
-            <span id="gene-count" class="alert-primary counter"/>
+            <span id="gene-count" class="alert-primary counter"></span>
+            <button id="copy-genes-to-clipboard" class="copy-data-to-clipboard btn btn-sm btn-success btn-raised" onclick="copyGenesToClipboard()">Copy selected</button>
           </div>
           <div style="display:flex;">
-            <div id="gene-histogram">
+            <div id="gene-bar-chart">
             </div>
-            <table id="gene-table" class="display"></table>
           </div>
         </div>
       </div>
-
+    </div>
 
     </div>
 

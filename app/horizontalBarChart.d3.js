@@ -16,10 +16,14 @@ class HorizontalBarChart {
     this.main_yAxis = null;
     this.mini_width = null;
     this.textScale = null;
+    this.dispatch = d3.dispatch("barselect");
+    // This adds the "on" methods to our custom exports
+    d3.rebind(this, this.dispatch, "on");
+
   }
 
 
-  init(data) {
+  init(data, options) {
     let me = this;
 
     me.data = data;
@@ -29,19 +33,18 @@ class HorizontalBarChart {
     ///////////////// Set-up SVG and wrappers ///////////////////
     /////////////////////////////////////////////////////////////
 
-    //Added only for the mouse wheel
-    //var zoomer = d3.behavior.zoom()
-     //   .on("zoom", null);
+    var width  = options.hasOwnProperty("width") ? options.width : $(me.container[0]).innerWidth();
+    var height = options.hasOwnProperty("height") ? options.height : $(me.container[0]).innerHeight();
 
-    var w = $(me.container[0]).innerWidth();
+    var selectorWidth = options.hasOwnProperty("selectorWidth") ? options.selectorWidth : 100;
 
     var main_margin = {top: 10, right: 10, bottom: 30, left: 60},
-        main_width = w - main_margin.left - main_margin.right,
-        main_height = 400 - main_margin.top - main_margin.bottom;
+        main_width  = width - selectorWidth - main_margin.left - main_margin.right,
+        main_height = height - main_margin.top - main_margin.bottom;
 
     var mini_margin = {top: 10, right: 10, bottom: 30, left: 10},
-        mini_height = 400 - mini_margin.top - mini_margin.bottom;
-    me.mini_width = (w/5) - mini_margin.left - mini_margin.right;
+        mini_height = height - mini_margin.top - mini_margin.bottom;
+    me.mini_width   = selectorWidth - mini_margin.left - mini_margin.right;
 
     me.container.select("svg").remove();
 
@@ -49,12 +52,6 @@ class HorizontalBarChart {
         .attr("class", "svgWrapper")
         .attr("width", main_width + main_margin.left + main_margin.right + me.mini_width + mini_margin.left + mini_margin.right)
         .attr("height", main_height + main_margin.top + main_margin.bottom)
-        //.call(zoomer)
-        //.on("wheel.zoom", scroll)
-        //.on("mousewheel.zoom", scroll)
-        //.on("DOMMouseScroll.zoom", scroll)
-        //.on("MozMousePixelScroll.zoom", scroll)
-        //Is this needed?
         .on("mousedown.zoom", null)
         .on("touchstart.zoom", null)
         .on("touchmove.zoom", null)
@@ -102,7 +99,7 @@ class HorizontalBarChart {
     //Add group for the x axis
     d3.select(".mainGroupWrapper").append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate(" + 0 + "," + (main_height + 5) + ")");
+        .attr("transform", "translate(" + 0 + "," + (main_height) + ")");
 
     //Create y axis object
     me.main_yAxis = d3.svg.axis()
@@ -110,6 +107,13 @@ class HorizontalBarChart {
       .orient("left")
       .tickSize(0)
       .outerTickSize(0);
+
+    // Add the text label for the x axis
+    d3.select(".mainGroupWrapper").append("text")
+        .attr("transform", "translate(" + ((main_width / 2)) + " ," + (main_height + main_margin.bottom) + ")")
+        .style("text-anchor", "middle")
+        .text("Gene Panels");
+
 
     //Add group for the y axis
     mainGroup.append("g")
@@ -145,11 +149,12 @@ class HorizontalBarChart {
 
     //What should the first extent of the brush become - a bit arbitrary this
     //var brushExtent = Math.max( 1, Math.min( 20, Math.round(me.data.length*0.2) ) );
-    var brushExtent = Math.min( 20, me.data.length-1 );
+    var brushExtent = 50;
+    var yExtentEnd = brushExtent >= me.data.length ? me.mini_yScale.rangeExtent()[1] : me.mini_yScale(me.data[brushExtent].name);
 
     me.brush = d3.svg.brush()
         .y(me.mini_yScale)
-        .extent([me.mini_yScale(me.data[0].name), me.mini_yScale(me.data[brushExtent].name)])
+        .extent([me.mini_yScale(me.data[0].name), yExtentEnd])
         .on("brush", me.brushmove)
         //.on("brushend", brushend);
 
@@ -230,11 +235,10 @@ class HorizontalBarChart {
 
   //Function runs on a brush move - to update the big bar chart
   update() {
-    var me = this;
+    var me = geneBarChart;
     /////////////////////////////////////////////////////////////
     ////////// Update the bars of the main bar chart ////////////
     /////////////////////////////////////////////////////////////
-
     //DATA JOIN
     var bar = d3.select(".mainGroup").selectAll(".bar")
         .data(me.data, function(d) { return d.key; });
@@ -267,7 +271,7 @@ class HorizontalBarChart {
 
   //First function that runs on a brush move
   brushmove() {
-    var me = geneHistogramChart;
+    var me = geneBarChart;
 
     var extent = me.brush.extent();
 
@@ -295,13 +299,16 @@ class HorizontalBarChart {
     //Update the colors within the mini bar chart
     var selected = me.mini_yScale.domain()
       .filter(function(d) { return (extent[0] - me.mini_yScale.rangeBand() + 1e-2 <= me.mini_yScale(d)) && (me.mini_yScale(d) <= extent[1] - 1e-2); });
+
     //Update the colors of the mini chart - Make everything outside the brush grey
     d3.select(".miniGroup").selectAll(".bar")
-      .style("fill", function(d, i) { return selected.indexOf(d.name) > -1 ? "url(#gradient-rainbow-mini)" : "#e0e0e0"; });
+      .style("fill", function(d, i) { return selected.indexOf(d.name) > -1 ? "url(#gradient-rainbow-mini)" : "#a3a3a3"; });
 
     //Update the label size
     d3.selectAll(".y.axis text")
       .style("font-size", me.textScale(selected.length));
+
+    me.dispatch.barselect(selected);
 
     //Update the big bar chart
     me.update();
@@ -315,7 +322,7 @@ class HorizontalBarChart {
   //Based on http://bl.ocks.org/mbostock/6498000
   //What to do when the user clicks on another location along the brushable bar chart
   brushcenter() {
-    var me = geneHistogramChart;
+    var me = geneBarChart;
 
     var target = d3.event.target,
         extent = me.brush.extent(),
@@ -333,35 +340,6 @@ class HorizontalBarChart {
 
   }//brushcenter
 
-  /////////////////////////////////////////////////////////////
-  ///////////////////// Scroll functions //////////////////////
-  /////////////////////////////////////////////////////////////
-
-  scroll() {
-    var me = geneHistogramChart;
-
-    //Mouse scroll on the mini chart
-    var extent = me.brush.extent(),
-      size = extent[1] - extent[0],
-      range = me.mini_yScale.range(),
-      y0 = d3.min(range),
-      y1 = d3.max(range) + me.mini_yScale.rangeBand(),
-      dy = d3.event.deltaY,
-      topSection;
-
-    if ( extent[0] - dy < y0 ) { topSection = y0; }
-    else if ( extent[1] - dy > y1 ) { topSection = y1 - size; }
-    else { topSection = extent[0] - dy; }
-
-    //Make sure the page doesn't scroll as well
-    d3.event.stopPropagation();
-    d3.event.preventDefault();
-
-    me.gBrush
-        .call(me.brush.extent([ topSection, topSection + size ]))
-        .call(me.brush.event);
-
-  }//scroll
 
   /////////////////////////////////////////////////////////////
   ///////////////////// Helper functions //////////////////////
@@ -371,7 +349,11 @@ class HorizontalBarChart {
   createGradient(idName, endPerc) {
     var me = this;
 
-    var coloursRainbow = ["#EFB605", "#E9A501", "#E48405", "#E34914", "#DE0D2B", "#CF003E", "#B90050", "#A30F65", "#8E297E", "#724097", "#4F54A8", "#296DA4", "#0C8B8C", "#0DA471", "#39B15E", "#7EB852"];
+    //var coloursRainbow = ["#EFB605", "#E9A501", "#E48405", "#E34914", "#DE0D2B", "#CF003E", "#B90050", "#A30F65", "#8E297E", "#724097", "#4F54A8", "#296DA4", "#0C8B8C", "#0DA471", "#39B15E", "#7EB852"];
+    //var coloursRainbow = ["#4F54A8", "#296DA4", "#0C8B8C", "#0DA471", "#39B15E", "#7EB852"];
+
+    //var colors = ['#41c4b1', '#41b6c4','#2c7fb8','#253494'];
+    var colors = [ '#7fcdbb','#41b6c4','#1d91c0','#225ea8','#0c2c84'];
 
     me.defs.append("linearGradient")
       .attr("id", idName)
@@ -379,9 +361,9 @@ class HorizontalBarChart {
       .attr("x1", "0%").attr("y1", "0%")
       .attr("x2", endPerc).attr("y2", "0%")
       .selectAll("stop")
-      .data(coloursRainbow)
+      .data(colors)
       .enter().append("stop")
-      .attr("offset", function(d,i) { return i/(coloursRainbow.length-1); })
+      .attr("offset", function(d,i) { return i/(colors.length-1); })
       .attr("stop-color", function(d) { return d; });
   }//createGradient
 

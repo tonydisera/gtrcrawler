@@ -10,13 +10,9 @@ function init() {
   // disease table
   //
   diseaseTable = $('#disease-table').DataTable({
-//    paging:         false,
-//    scrollY:        170,
-//    scrollCollapse: true,
-    data: [],
-    scrollResize: true,
-    scrollY: 200,
+    scrollY:        170,
     scrollCollapse: true,
+    //scrollResize: true,
     paging: false,
     data: [],
     columns: [
@@ -66,8 +62,8 @@ function init() {
   //
   genePanelTable = $('#gene-panel-table').DataTable({
     data: [],
-    scrollResize: true,
-    scrollY: 320,
+    //scrollResize: true,
+    scrollY: 270,
     scrollCollapse: true,
     paging: false,
     columns: [
@@ -123,8 +119,8 @@ function init() {
   //
   geneTable = $('#gene-table').DataTable({
     data: [],
-    scrollResize: true,
-    scrollY: 420,
+    //scrollResize: true,
+    scrollY: 650,
     scrollCollapse: true,
     paging: false,
     columns: [
@@ -179,7 +175,7 @@ function init() {
 
   geneBarChart = HorizontalBarChart()
     .width(300)
-    .height(300)
+    .height(660)
     .widthSmall(80)
     .on("barselect", function(selectedGeneNames) {
       model.selectedGeneNames = selectedGeneNames;

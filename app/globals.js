@@ -8,6 +8,10 @@ const DATA_TABLE_DOM = "<'row data-table-controls'<'col-sm-8 data-table-buttons'
                        "<'row'<'col-sm-12'tr>>" +
                        "<'row'<'col-sm-5'><'col-sm-7'p>>";
 
+const DATA_TABLE_DOM_ALT = "<'row data-table-controls'<'data-table-search'fl>>" +
+                       "<'row'<'col-sm-12'tr>>" +
+                       "<'row'<'col-sm-5'><'col-sm-7'p>>";
+
 let model = new Model();
 
 let colorMS = [

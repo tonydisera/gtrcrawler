@@ -51,6 +51,10 @@ function HorizontalBarChart() {
 
     container.select("svg").remove();
 
+    if (theData = null || theData.length == 0) {
+      return;
+    }
+
     svg = container.append("svg")
         .attr("class", "svgWrapper")
         .attr("width", widthChart + margin.left + margin.right + widthSmallChart + marginSmall.left + marginSmall.right)

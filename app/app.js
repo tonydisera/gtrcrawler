@@ -75,33 +75,8 @@ function init() {
       { title: "Selected diseases", data:  "_diseaseCount" }
     ],
     "order": [[ 1, "desc" ], [ 2, "asc" ]],
-    dom: DATA_TABLE_DOM,
-    buttons: [
-        {
-            text: 'Select all',
-            className: 'btn btn-raised btn-default',
-            action: function ( e, dt, node, config ) {
-              selectGenePanels();
-            }
-        },
-        {
-            text: 'Select with genes < 200',
-            className: 'btn btn-raised btn-default',
-            action: function ( e, dt, node, config ) {
-              selectGenePanels({maxGeneCount: 200})
-            }
-        },
-        {
-            text: 'De-select all',
-            className: 'btn btn-raised btn-default',
-            action: function ( e, dt, node, config ) {
-              deselectGenePanels();
-            }
-        }
-
-    ]
+    dom: DATA_TABLE_DOM_ALT
   });
-  genePanelTable.buttons().container().appendTo( $('.data-table-buttons', genePanelTable.table().container()));
   genePanelTable.on( 'order.dt search.dt', function () {
     genePanelTable.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
       cell.innerHTML = i+1;
@@ -174,6 +149,23 @@ function init() {
   })
   .draw();
 
+  //
+  // Gene panel vendors - multi-select
+  //
+  $('#select-vendor').selectize(
+    {
+      create: true,
+      valueField: 'value',
+      labelField: 'value',
+      searchField: ['value'],
+      maxItems: null,
+      allowEmptyOption: true
+    }
+  );
+  $('#select-vendor')[0].selectize.on('change', function(value) {
+    var selectedVendors = $('#select-vendor')[0].selectize.getValue();
+    selectGenePanels({'vendors': selectedVendors});
+  })
 
   geneHistogramChart = HistogramChart()
     .width(340)
@@ -228,6 +220,8 @@ function selectGenePanels(filterObject) {
     var indexes = genePanelTable.rows().eq( 0 ).filter( function (rowIdx) {
       if (filterObject.hasOwnProperty('maxGeneCount')) {
         return genePanelTable.row(rowIdx).data()._genes.length < filterObject.maxGeneCount;
+      } else if (filterObject.hasOwnProperty('vendors')) {
+        return filterObject.vendors.indexOf(genePanelTable.row(rowIdx).data().offerer) >= 0;
       }
     } );
 
@@ -397,6 +391,12 @@ function showGenePanels(diseases) {
     $('#gene-panels-box').addClass("hide");
     $('#gene-panel-table_wrapper').addClass("hide");
   }
+
+  let vendors = model.getGenePanelVendors(mergedGenePanels);
+  $('#select-vendor')[0].selectize.clearOptions();
+  vendors.forEach(function(vendor) {
+    $('#select-vendor')[0].selectize.addOption({value: vendor});
+  })
 }
 
 
@@ -415,6 +415,10 @@ function showGenes(genePanels) {
 
   let data = model.getGeneBarChartData(mergedGenes);
   geneBarChart(d3.select('#gene-bar-chart'), data);
+
+  if (mergedGenes.length == 0) {
+    $('#genes-box').addClass("hide");
+  }
 
 }
 

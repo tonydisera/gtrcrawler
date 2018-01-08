@@ -7,6 +7,10 @@ body {
   display: none;
 }
 
+#select-vendor-box input::placeholder {
+  font-size: 12px !important;
+}
+
 .main-section {
   width: 100%;
   margin-left: 10px;
@@ -68,7 +72,7 @@ body {
 
 .card-body .counter {
   margin-left: 12px;
-  font-size: 14;
+  font-size: 12px;
   padding: 2px 6px;
   vertical-align: top;
   display: inline-block;
@@ -269,12 +273,17 @@ button.dt-button.disabled, div.dt-button.disabled, a.dt-button.disabled {
   margin-top: -30px;
   margin-left: 300px;
 }
+#gene-panels-box .data-table-controls {
+    float: right;
+    margin-right: 10px;
+}
 #diseases-box .data-table-controls {
   margin-top: -30px;
   margin-left: 400px;
 }
 #genes-box .data-table-controls {
   margin-left: 0px;
+
 }
 
 table.dataTable thead th, table.dataTable thead td {
@@ -317,3 +326,45 @@ button.dt-button, div.dt-button, a.dt-button {
     user-select: none;
     text-decoration: none;
     outline: none;
+}
+
+
+/*                     */
+/* Selectize dropdown  */
+/*                     */
+.selectize-dropdown {
+  font-size: 12px;
+  line-height: 15px;
+  color: $text-color;
+}
+
+.selectize-input {
+  font-size: 12px;
+  line-height: 13px;
+  padding: 4px 4px 4px 4px;
+  -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  border-radius: 0 !important;
+  border: none !important;
+  min-height: 18px;
+}
+
+.selectize-control.multi .selectize-input:after {
+    content: '\e252';
+    font-family: "Glyphicons Halflings";
+    line-height: 2;
+    display: block;
+    position: absolute;
+    top: 20%;
+    right: 4px;
+    background-color: white;
+    font-size: 9px;
+    cursor: pointer;
+}
+
+
+.selectize-control.multi .selectize-input.dropdown-active:after {
+    content: '\e253';
+    font-family: "Glyphicons Halflings";
+    background-color: white;
+}

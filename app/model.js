@@ -205,6 +205,15 @@ class Model {
 
   }
 
+  getGenePanelVendors(genePanels) {
+    let vendors = {};
+    genePanels.forEach(function(gp) {
+      vendors[gp.offerer] = true;
+    })
+
+    return Object.keys(vendors).sort();
+  }
+
   mergeGenePanelsAcrossDiseases(diseases) {
     var me = this;
     var genePanelMap = {};

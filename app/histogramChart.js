@@ -76,6 +76,10 @@ function HistogramChart() {
         .attr("preserveAspectRatio", "none");
 
       svg.select("g").remove();
+
+      if (dataOrig == null || dataOrig.length == 0) {
+        return;
+      }
       var group = svg.append("g")
                      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 

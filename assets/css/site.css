@@ -99,6 +99,10 @@ body {
   shape-rendering: crispEdges;
 }
 
+.axis .label {
+  font-size: 12px;
+}
+
 .brush .extent {
   fill-opacity: .125;
   shape-rendering: crispEdges;
@@ -129,14 +133,17 @@ body {
 }
 
 #gene-histogram-chart .bar text {
-    font-size: 9px;
+    font-size: 10px;
 }
 
 #gene-histogram-chart .x.axis {
-  font-size: 9px;
+  font-size: 10px;
 }
 #gene-histogram-chart .y.axis {
-  font-size: 9px !important;
+  font-size: 10px !important;
+}
+#gene-histogram-chart .axis .label {
+  font-size: 12px !important;
 }
 
 

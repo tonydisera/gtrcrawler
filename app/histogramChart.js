@@ -178,7 +178,7 @@ function HistogramChart() {
         group.append("text")
           .attr("class", "x axis label")
           .attr("transform", "translate(" + (width / 2) + " ," + (y.range()[0]  + margin.bottom) + ")")
-          .style("text-anchor", "middle")
+          .style("text-anchor", "end")
           .text(xAxisLabel);
       }
 
@@ -191,7 +191,7 @@ function HistogramChart() {
           .attr("y", 0 - margin.left)
           .attr("x",0 - (height / 2))
           .attr("dy", "1em")
-          .style("text-anchor", "middle")
+          .style("text-anchor", "start")
           .text(yAxisLabel);
 
       }

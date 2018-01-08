@@ -4,7 +4,36 @@ $(document).ready(function() {
 })
 
 function init() {
-   $('body').bootstrapMaterialDesign();
+  $('body').bootstrapMaterialDesign();
+
+
+  /*
+  $.fn.allchange = function (callback) {
+      var me = this;
+      var last = "";
+      var infunc = function () {
+          var text = $(me).val();
+          if (text != last) {
+              last = text;
+              callback();
+          }
+          setTimeout(infunc, 100);
+      }
+      setTimeout(infunc, 100);
+  };
+
+  $('#input-search-term').allchange(function() {
+    performSearch();
+  })
+*/
+
+
+  $('.navbar').keypress(function(e){
+    if(e.which == 13) {
+      performSearch();
+    }
+  })
+
 
   //
   // disease table

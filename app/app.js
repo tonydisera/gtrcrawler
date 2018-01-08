@@ -133,6 +133,7 @@ function init() {
     "order": [[ 2, "desc" ], [3, "asc"]],
     dom: DATA_TABLE_DOM,
     buttons: [
+    /*
         {
             text: 'Select all',
             className: 'btn btn-raised btn-default ',
@@ -154,6 +155,7 @@ function init() {
               deselectGenes({top: 100});
             }
         },
+    */
         {
             text: 'Copy selected',
             className: 'btn btn-raised btn-success copy-data-to-clipboard copy-genes-to-clipboard',
@@ -172,6 +174,22 @@ function init() {
   })
   .draw();
 
+
+  geneHistogramChart = HistogramChart()
+    .width(340)
+    .height(150)
+    .widthPercent("100%")
+    .heightPercent("100%")
+    .margin( {left: 45, right: 15, top: 10, bottom: 30})
+    .yAxisLabel( "log(Genes)" )
+    .xAxisLabel( "Gene Panels" )
+    .onSelected(function(selectedGenes) {
+      model.selectedGeneNames = selectedGenes.map(function(gene) {
+        return gene.name;
+      })
+      selectGenes({selected: model.selectedGeneNames})
+      $("#gene-count").text(model.selectedGeneNames.length + " of " + model.mergedGenes.length);
+    });
 
   geneBarChart = HorizontalBarChart()
     .width(300)
@@ -391,6 +409,9 @@ function showGenes(genePanels) {
 
   geneTable.rows.add(mergedGenes);
   geneTable.draw();
+
+  var selection = d3.select('#gene-histogram-chart').datum(model.mergedGenes);
+  geneHistogramChart(selection, {'logScale': true, 'descendingX': true, 'selectTop': 50});
 
   let data = model.getGeneBarChartData(mergedGenes);
   geneBarChart(d3.select('#gene-bar-chart'), data);

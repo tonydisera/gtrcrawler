@@ -288,7 +288,7 @@ function HorizontalBarChart() {
     yScale.rangeBands( [ yZoom(originalRange[0]), yZoom(originalRange[1]) ], 0.4, 0);
 
     //Update the y axis of the big chart
-    d3.select(".mainGroup")
+    svg.select(".mainGroup")
       .select(".y.axis")
       .call(yAxis);
 
@@ -301,11 +301,11 @@ function HorizontalBarChart() {
       .filter(function(d) { return (extent[0] - yScaleMini.rangeBand() + 1e-2 <= yScaleMini(d)) && (yScaleMini(d) <= extent[1] - 1e-2); });
 
     //Update the colors of the mini chart - Make everything outside the brush grey
-    d3.select(".miniGroup").selectAll(".bar")
+    svg.select(".miniGroup").selectAll(".bar")
       .style("fill", function(d, i) { return selected.indexOf(d.name) > -1 ? "url(#gradient-rainbow-mini)" : "#a3a3a3"; });
 
     //Update the label size
-    d3.selectAll(".y.axis text")
+    svg.selectAll(".y.axis text")
       .style("font-size", textScale(selected.length));
 
     dispatch.barselect(selected);

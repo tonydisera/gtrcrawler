@@ -51,8 +51,8 @@
 
 
   <!--  App -->
- <!-- <script type="text/javascript" src="app/histogram.d3.js"></script> -->
-  <script type="text/javascript" src="app/horizontalBarChart.d3.js"></script>
+  <script type="text/javascript" src="app/histogramChart.js"></script>
+  <script type="text/javascript" src="app/horizontalBarChart.js"></script>
   <script type="text/javascript" src="app/model.js"></script>
   <script type="text/javascript" src="app/globals.js"></script>
   <script type="text/javascript" src="app/constants.js"></script>
@@ -105,7 +105,12 @@
             <span id="gene-count" class="alert-primary counter"/>
           </div>
           <div  style="display:flex;height:100%">
-            <div style="flex: 0 0 400">
+
+            <div class="" style="flex: 0 0 350px;height:150px;margin-right:10px">
+              <svg id="gene-histogram-chart"></svg>
+            </div>
+
+            <div  class="hide" style="flex: 0 0 350px" >
               <div id="gene-bar-chart"></div>
             </div>
             <div style="flex: 1 1 auto;">
@@ -115,25 +120,8 @@
         </div>
     </div>
 
-<!--
-    <div class="right-section" style="height:calc(100vh - 50px)">
 
-        <div class="card card-body hide" id="genes-chart-box" >
-          <div>
-            <h5 class="name">Genes</h5>
-            <span id="gene-count" class="alert-primary counter"></span>
-            <button id="copy-genes-to-clipboard" class="copy-data-to-clipboard btn btn-sm btn-success btn-raised" onclick="copyGenesToClipboard()">Copy selected</button>
-          </div>
-          <div style="display:flex;">
-            <div id="gene-bar-chart">
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
--->
-
-    </div>
+  </div>
 
 
 </div>

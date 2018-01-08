@@ -74,61 +74,13 @@ body {
   display: inline-block;
 }
 
-/* Histogram */
-/*
-.bar rect {
-  fill: #2d8fc1;
-  shape-rendering: crispEdges;
-}
-
-.bar rect.unselected {
-    fill: #9C9E9F;
-}
-
-.axis path, .axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
-
-.x.axis {
-  font-size: 9px;
-}
-.y.axis {
-  font-size: 9px;
-}
-div.tooltip {
-  position: absolute;
-  text-align: center;
-  z-index:20;
-  color:white;
-  padding: 4px 6px 4px 6px;
-  font: 11px arial;
-  background: rgb(80,80,80);
-  border: 0px;
-  border-radius: 4px;
-  pointer-events: none;
-}
-*/
-
-#title {
-  font-size: 20px;
-  padding-bottom: 10px;
-  padding-top: 20px;
-  font-weight: 300;
-}
-
-#explanation {
-  font-size: 12px;
-  max-width: 620px;
-  margin: 0 auto;
-  padding-top: 10px;
-  color: #ababab;
-  font-weight: 300;
-}
-
+/*                      */
+/*  Any svg chart       */
+/*                      */
 .y.axis line {
   fill: none;
+  stroke: #e0e0e0;
+  shape-rendering: crispEdges;
 }
 
 .x.axis line {
@@ -138,7 +90,9 @@ div.tooltip {
 }
 
 .axis path {
-  display: none;
+  fill: none;
+  stroke: #848383;
+  shape-rendering: crispEdges;
 }
 
 .brush .extent {
@@ -154,13 +108,62 @@ div.tooltip {
   stroke-width: 2px;
 }
 
-.bar {
-  /*shape-rendering: crispEdges;*/
+
+
+
+/*                      */
+/* Histogram Chart      */
+/*                      */
+#gene-histogram-chart .bar rect {
+    fill:   #7dc2e5;
+    stroke: #1f5d7a;
+    stroke-width: .5;
+}
+
+#gene-histogram-chart .bar.selected rect {
+    fill: #2d8fc1;
+}
+
+#gene-histogram-chart .bar text {
+    font-size: 9px;
+}
+
+#gene-histogram-chart .x.axis {
+  font-size: 9px;
+}
+#gene-histogram-chart .y.axis {
+  font-size: 9px !important;
 }
 
 
-/* Material design bootstrap */
+div.tooltip {
+  position: absolute;
+  text-align: center;
+  z-index:20;
+  color:white;
+  padding: 4px 6px 4px 6px;
+  font: 11px arial;
+  background: rgb(80,80,80);
+  border: 0px;
+  border-radius: 4px;
+  pointer-events: none;
+}
 
+/*                           */
+/* Gene horizontal barchart  */
+/*                           */
+#gene-bar-chart #title {
+  font-size: 20px;
+  padding-bottom: 10px;
+  padding-top: 20px;
+  font-weight: 300;
+}
+
+
+
+/*                           */
+/* Material design bootstrap */
+/*                           */
 .card-body .btn-sm {
   font-size: 12px !important;
   padding: 3px 10px 2px 10px !important;
@@ -270,6 +273,9 @@ button.dt-button.disabled, div.dt-button.disabled, a.dt-button.disabled {
   margin-top: -30px;
   margin-left: 400px;
 }
+#genes-box .data-table-controls {
+  margin-left: 0px;
+}
 
 table.dataTable thead th, table.dataTable thead td {
     border-bottom: 1px solid #a1a0a0;
@@ -285,9 +291,9 @@ button.dt-button, div.dt-button, a.dt-button {
     padding: 4px 10px !important;
     position: relative;
     display: inline-block;
-    margin-left: 10px;
+    margin-left: 0px;
+    margin-right: 10px;
     box-sizing: initial;
-    margin-right: initial;
     margin-bottom: initial;
     padding: initial;
     border: initial;

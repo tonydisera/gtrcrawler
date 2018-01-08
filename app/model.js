@@ -333,22 +333,26 @@ class Model {
   }
 
   getGeneHistogramData(genes) {
-    var histoData = [];
 
-    // Sort genes by gene panel count (descending order)
-    var sortedGenes = genes.sort(function(a,b) {
-      if (a._genePanelCount == b._genePanelCount) {
-        return b._diseaseCount - a._diseaseCount;
-      } else {
-        return b._genePanelCount - a._genePanelCount ;
+    var histoMap = {};
+    genes.forEach(function(gene) {
+      var geneCount = histoMap[gene._genePanelCount];
+      if (geneCount == null) {
+        geneCount = 0;
       }
+      geneCount++;
+      histoMap[gene._genePanelCount] = parseInt(geneCount);
     })
 
-    sortedGenes.forEach(function(gene) {
-      histoData.push([histoData.length, +gene._genePanelCount, gene.name])
-    });
+    var histo = [];
+    for (let gpCount in histoMap) {
+      let geneCount = histoMap[gpCount];
+      histo.push([parseInt(gpCount), geneCount])
+    }
 
-    return histoData;
+    return histo.sort(function(a,b) {
+      return b[1] - a[1];
+    })
   }
 
   hashToSimpleList(map, fieldName, delim=" ") {

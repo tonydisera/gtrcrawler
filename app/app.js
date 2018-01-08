@@ -63,7 +63,7 @@ function init() {
   genePanelTable = $('#gene-panel-table').DataTable({
     data: [],
     //scrollResize: true,
-    scrollY: 270,
+    scrollY: 220,
     scrollCollapse: true,
     paging: false,
     columns: [

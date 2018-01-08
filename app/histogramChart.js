@@ -83,8 +83,11 @@ function HistogramChart() {
       var max = d3.max(dataOrig, function(d){ return d._genePanelCount;});
       var min = d3.min(dataOrig, function(d){ return d._genePanelCount;});
       var x = d3.scale.linear()
-            .domain([min, max])
+            .domain([min, max+1])
             .range(options.descendingX ? [innerWidth, 0] : [0, innerWidth]);
+
+
+
 
       // Generate a histogram using twenty uniformly-spaced bins.
       var data = d3.layout.histogram()
@@ -115,8 +118,11 @@ function HistogramChart() {
       var xAxis = d3.svg.axis()
           .scale(x)
           .orient("bottom")
-          .tickFormat(d3.format("i"))
+          .tickFormat(function(tickValue) {
+            return tickValue;
+          })
           .ticks(max)
+
 
       var yAxis = d3.svg.axis()
           .scale(y)
@@ -148,8 +154,14 @@ function HistogramChart() {
 
       group.append("g")
           .attr("class", "x axis")
-          .attr("transform", "translate(0," + innerHeight + ")")
+          .attr("transform", "translate(" + ((x(data[0].dx) - x(0)) / 2) + "," + innerHeight + ")")
           .call(xAxis);
+
+
+      // All of the ticks were shifted left to be in the bar's center.  So get rid of the last tick.
+      group.selectAll('.x.axis .tick').filter(function(d, i) {
+          return i === data.length;
+      }).remove()
 
       group.append("g")
           .attr("class", "y axis")

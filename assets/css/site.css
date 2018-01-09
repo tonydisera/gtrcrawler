@@ -3,12 +3,26 @@ body {
   margin-top: 0px;
 }
 
+#container {
+  margin-top: 5px;
+  margin-left:10px;
+  margin-right:10px
+}
+
 .hide {
   display: none;
 }
 
-#select-vendor-box input::placeholder {
-  font-size: 12px !important;
+.card-body h5 {
+  display: inline-block;
+}
+
+.card-body .counter {
+  margin-left: 12px;
+  font-size: 13px;
+  padding: 2px 6px;
+  vertical-align: top;
+  display: inline-block;
 }
 
 .main-section {
@@ -18,7 +32,10 @@ body {
 }
 
 .left-section {
-  margin-right: 10px;
+  margin-right: 0px;
+  width:100%;
+  display:block;
+
 }
 .right-section {
   min-width: 320px;
@@ -31,6 +48,10 @@ body {
 }
 .navbar.navbar-dark input {
   color: #e7e5e5;
+}
+#nav-input-search-box {
+  display:inline-block;
+  width:70%
 }
 #input-search-term {
   width: 200px;
@@ -45,38 +66,62 @@ body {
   padding-left: 10px;
 }
 
-#gene-bar-chart {
-  min-width: 300px;
-  max-width: 300px;
+
+#diseases-box {
+  flex:0 1 180px;
+}
+#gene-panels-box {
+  flex:0 1 280px;
+}
+#genes-box {
+  flex:1 1 550px;
+}
+
+#gene-panel-filter-box {
+  display:inline-block;
+  margin-left:10px;
+  vertical-align:top;
+}
+#select-vendor-box {
+  margin-top:0px;
+  font-size:12px;
+  min-width:200px;
+  width:auto;
+  display:inline-block;
+  margin-left:20px;
+}
+#select-vendor-box input::placeholder {
+  font-size: 12px !important;
+}
+
+
+
+#gene-histogram-box {
+  flex: 0 0 400px;
+  height: 150px;
+  margin-right:10px
+}
+#gene-bar-chart-box {
+  flex: 0 0 400px;
 }
 
 #gene-histogram {
   min-width: 500px;
   max-width: 500px;
 }
-.card-body h5 {
-  display: inline-block;
-  width: 160px;
+#gene-bar-chart {
+  min-width: 300px;
+  max-width: 300px;
 }
-
-#diseases-box h5 {
-  width: 260px;
-}
-#genes-chart-box.card-body h5 {
-  width: initial;
+#gene-table-box {
+  flex: 1 1 auto;
 }
 
 #copy-genes-to-clipboard {
   float: right;
 }
 
-.card-body .counter {
-  margin-left: 12px;
-  font-size: 12px;
-  padding: 2px 6px;
-  vertical-align: top;
-  display: inline-block;
-}
+
 
 /*                      */
 /*  Any svg chart       */
@@ -187,8 +232,8 @@ div.tooltip {
 
 
 .card {
-  margin-top: 5px;
-  margin-bottom: 0px;
+  margin-top: 0px;
+  margin-bottom: 15px;
   margin-left: 0px;
   margin-right: 5px;
   font-size: .775rem;

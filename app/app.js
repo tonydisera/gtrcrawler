@@ -7,27 +7,6 @@ function init() {
   $('body').bootstrapMaterialDesign();
 
 
-  /*
-  $.fn.allchange = function (callback) {
-      var me = this;
-      var last = "";
-      var infunc = function () {
-          var text = $(me).val();
-          if (text != last) {
-              last = text;
-              callback();
-          }
-          setTimeout(infunc, 100);
-      }
-      setTimeout(infunc, 100);
-  };
-
-  $('#input-search-term').allchange(function() {
-    performSearch();
-  })
-*/
-
-
   $('.navbar').keypress(function(e){
     if(e.which == 13) {
       performSearch();
@@ -137,29 +116,6 @@ function init() {
     "order": [[ 2, "desc" ], [3, "asc"]],
     dom: DATA_TABLE_DOM,
     buttons: [
-    /*
-        {
-            text: 'Select all',
-            className: 'btn btn-raised btn-default ',
-            action: function ( e, dt, node, config ) {
-              selectGenes();
-            }
-        },
-        {
-            text: 'Select top 100',
-            className: 'btn btn-raised btn-default ',
-            action: function ( e, dt, node, config ) {
-              selectGenes({top: 100});
-            }
-        },
-        {
-            text: 'Deselect all',
-            className: 'btn btn-raised btn-default ',
-            action: function ( e, dt, node, config ) {
-              deselectGenes({top: 100});
-            }
-        },
-    */
         {
             text: 'Copy selected',
             className: 'btn btn-raised btn-success copy-data-to-clipboard copy-genes-to-clipboard',
@@ -197,7 +153,7 @@ function init() {
   })
 
   geneHistogramChart = HistogramChart()
-    .width(340)
+    .width(390)
     .height(150)
     .widthPercent("100%")
     .heightPercent("100%")
@@ -213,7 +169,7 @@ function init() {
     });
 
   geneBarChart = HorizontalBarChart()
-    .width(300)
+    .width(390)
     .height(660)
     .widthSmall(80)
     .on("barselect", function(selectedGeneNames) {
@@ -292,6 +248,9 @@ function selectGenes(filterObject) {
 
   }
   showSelectedCount(geneTable, '#gene-count');
+  $('html').animate({
+      scrollTop: $('.navbar').outerHeight() + $('#diseases-box').outerHeight()
+  }, 1000);
 }
 function deselectGenes() {
   $(geneTable.rows().nodes()).removeClass("selected");

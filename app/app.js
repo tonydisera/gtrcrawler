@@ -61,6 +61,7 @@ function init() {
   diseaseTable.on( 'click', 'tr', function () {
     $(this).toggleClass('selected');
     var selectedDiseases = diseaseTable.rows('.selected').data().toArray();
+    showSelectedCount(diseaseTable, '#disease-count');
     showGenePanels(selectedDiseases);
   });
 
@@ -94,6 +95,8 @@ function init() {
   genePanelTable.on( 'click', 'tr', function () {
     $(this).toggleClass('selected');
     var selectedGenePanels = genePanelTable.rows('.selected').data().toArray();
+    console.log(selectedGenePanels.length)
+    showSelectedCount(genePanelTable, '#gene-panel-count');
     showGenes(selectedGenePanels);
   });
 
@@ -133,6 +136,13 @@ function init() {
     });
   })
   .draw();
+  //Select and de-select rows
+  geneTable.on( 'click', 'tr', function () {
+    $(this).toggleClass('selected');
+    //var selectedGeneCount = geneTable.rows('.selected').data().toArray().length;
+    //$("#gene-count").text(selectedGeneCount + " of " + model.mergedGenes.length);
+    showSelectedCount(geneTable, "#gene-count");
+  });
 
   //
   // Gene panel vendors - multi-select
@@ -273,7 +283,7 @@ function copyGenesToClipboard() {
 
 
 function showSelectedCount(table, countSelector) {
-  $(countSelector).text(table.rows(".selected").data().length + ' of ' + table.rows().data().length + " selected");
+  $(countSelector).text(table.rows(".selected").data().toArray().length + ' of ' + table.rows().data().length + " selected");
 
   if (countSelector == "#gene-count") {
     if (table.rows(".selected").data().length == 0) {
@@ -454,4 +464,3 @@ jQuery.fn.dataTable.render.ellipsis = function ( cutoff, wordbreak, escapeHtml )
 function bodyHeight() {
   return window.innerHeight - $('.navbar').outerHeight() - 5;
 }
-
